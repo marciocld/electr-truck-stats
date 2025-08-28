@@ -14,12 +14,14 @@ import {
   Clock,
   BarChart3,
   Users,
-  DollarSign
+  DollarSign,
+  FileText
 } from "lucide-react";
 import { StatsCards } from "@/components/StatsCards";
 import { ChargingStations } from "@/components/ChargingStations";
 import { FleetOverview } from "@/components/FleetOverview";
 import { PerformanceChart } from "@/components/PerformanceChart";
+import { ReportGenerator } from "@/components/ReportGenerator";
 
 const Index = () => {
   const [activeTab, setActiveTab] = useState("overview");
@@ -64,7 +66,7 @@ const Index = () => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
+          <TabsList className="grid w-full grid-cols-5 mb-8">
             <TabsTrigger value="overview" className="flex items-center gap-2">
               <BarChart3 className="h-4 w-4" />
               Visão Geral
@@ -80,6 +82,10 @@ const Index = () => {
             <TabsTrigger value="performance" className="flex items-center gap-2">
               <TrendingUp className="h-4 w-4" />
               Performance
+            </TabsTrigger>
+            <TabsTrigger value="reports" className="flex items-center gap-2">
+              <FileText className="h-4 w-4" />
+              Relatórios
             </TabsTrigger>
           </TabsList>
 
@@ -158,6 +164,10 @@ const Index = () => {
 
           <TabsContent value="performance">
             <PerformanceChart />
+          </TabsContent>
+
+          <TabsContent value="reports">
+            <ReportGenerator />
           </TabsContent>
         </Tabs>
       </div>
