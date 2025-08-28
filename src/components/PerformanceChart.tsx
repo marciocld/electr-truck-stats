@@ -95,7 +95,7 @@ export const PerformanceChart = () => {
           const trendColor = kpi.trend === "up" ? "text-electric-green" : "text-destructive";
           
           return (
-            <Card key={index}>
+            <Card key={index} className="hover:shadow-electric-hover transition-all duration-300">
               <CardContent className="pt-6">
                 <div className="flex items-center justify-between mb-2">
                   <IconComponent className={`h-5 w-5 ${kpi.color}`} />
@@ -117,7 +117,7 @@ export const PerformanceChart = () => {
       {/* Charts and Data */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Energy Consumption Chart */}
-        <Card>
+        <Card className="hover:shadow-electric-hover transition-all duration-300">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Zap className="h-5 w-5 text-electric-blue" />
@@ -153,7 +153,7 @@ export const PerformanceChart = () => {
         </Card>
 
         {/* Cost Analysis */}
-        <Card>
+        <Card className="hover:shadow-electric-hover transition-all duration-300">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <DollarSign className="h-5 w-5 text-electric-green" />
@@ -210,7 +210,7 @@ export const PerformanceChart = () => {
       </div>
 
       {/* Detailed Analysis */}
-      <Card>
+      <Card className="hover:shadow-electric-hover transition-all duration-300">
         <CardHeader>
           <CardTitle>Análise Detalhada por Veículo</CardTitle>
           <CardDescription>

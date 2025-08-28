@@ -99,7 +99,7 @@ export const FleetOverview = () => {
         {trucks.map((truck) => {
           const StatusIcon = truck.statusIcon;
           return (
-            <Card key={truck.id} className="hover:shadow-lg transition-shadow">
+            <Card key={truck.id} className="hover:shadow-electric-hover transition-all duration-300">
               <CardHeader className="pb-3">
                 <div className="flex justify-between items-start">
                   <div>

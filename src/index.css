@@ -118,6 +118,55 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+  
+  html {
+    font-family: 'Inter', system-ui, sans-serif;
+  }
+}
+
+@layer components {
+  .shadow-electric {
+    box-shadow: var(--shadow-electric);
+  }
+  
+  .shadow-eco {
+    box-shadow: var(--shadow-eco);
+  }
+  
+  .shadow-electric-hover:hover {
+    box-shadow: var(--shadow-electric);
+  }
+  
+  .shadow-eco-hover:hover {
+    box-shadow: var(--shadow-eco);
+  }
+}
+
+@layer utilities {
+  @media print {
+    @page {
+      margin: 0;
+      size: A4;
+    }
+    
+    body {
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+    
+    /* Remove cabeçalhos e rodapés do navegador */
+    @page :first {
+      margin-top: 0;
+    }
+    
+    @page :left {
+      margin-left: 0;
+    }
+    
+    @page :right {
+      margin-right: 0;
+    }
   }
 }

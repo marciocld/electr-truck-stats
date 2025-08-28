@@ -56,7 +56,7 @@ export const StatsCards = () => {
       {stats.map((stat, index) => {
         const IconComponent = stat.icon;
         return (
-          <Card key={index} className="relative overflow-hidden">
+          <Card key={index} className="relative overflow-hidden hover:shadow-electric-hover">
             <CardHeader className="flex flex-row items-center justify-between pb-2">
               <CardTitle className="text-sm font-medium text-muted-foreground">
                 {stat.title}

@@ -146,7 +146,7 @@ export const ChargingStations = () => {
       {/* Stations Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {stations.map((station) => (
-          <Card key={station.id} className="hover:shadow-lg transition-shadow">
+          <Card key={station.id} className="hover:shadow-electric-hover transition-all duration-300">
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div>
