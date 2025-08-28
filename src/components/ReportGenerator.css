@@ -96,14 +96,11 @@
 }
 
 .template-metric-card {
-  padding: 32px 28px;
+  padding: 28px 24px;
   background-color: hsl(0 0% 100%);
-  border: 1px solid hsl(142 76% 88%);
-  border-radius: 20px;
-  box-shadow: 
-    0 1px 3px 0 hsl(142 76% 36% / 0.1),
-    0 8px 32px -8px hsl(142 76% 36% / 0.15),
-    inset 0 1px 0 0 hsl(0 0% 100% / 0.9);
+  border: 2px solid hsl(142 76% 85%);
+  border-radius: 16px;
+  box-shadow: 0 4px 20px -4px hsl(142 76% 36% / 0.12);
   display: flex;
   flex-direction: column;
   position: relative;
@@ -112,10 +109,9 @@
   height: auto;
   min-height: auto;
   justify-content: flex-start;
-  gap: 24px;
+  gap: 20px;
   align-items: stretch;
-  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  backdrop-filter: blur(10px);
+  transition: all 0.3s ease;
 }
 
 .template-metric-card::before {
@@ -124,35 +120,14 @@
   top: 0;
   left: 0;
   right: 0;
-  height: 4px;
-  background: linear-gradient(90deg, hsl(142 76% 36%), hsl(142 76% 50%));
-  border-radius: 20px 20px 0 0;
-}
-
-.template-metric-card::after {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -50%;
-  width: 100%;
-  height: 100%;
-  background: radial-gradient(circle, hsl(142 76% 95% / 0.3) 0%, transparent 70%);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.4s ease;
+  height: 3px;
+  background-color: hsl(142 76% 36%);
 }
 
 .template-metric-card:hover {
-  transform: translateY(-4px) scale(1.02);
-  box-shadow: 
-    0 4px 6px -1px hsl(142 76% 36% / 0.15),
-    0 20px 50px -12px hsl(142 76% 36% / 0.25),
-    inset 0 1px 0 0 hsl(0 0% 100% / 0.9);
-  border-color: hsl(142 76% 70%);
-}
-
-.template-metric-card:hover::after {
-  opacity: 1;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px -6px hsl(142 76% 36% / 0.2);
+  border-color: hsl(142 76% 60%);
 }
 
 .template-metric-header {
@@ -184,55 +159,37 @@
 }
 
 .template-metric-icon {
-  width: 18px;
-  height: 18px;
+  width: 16px;
+  height: 16px;
   color: hsl(142 76% 36%);
   vertical-align: middle;
   align-self: center;
   flex-shrink: 0;
   display: inline-block;
   line-height: normal;
-  filter: drop-shadow(0 1px 2px hsl(142 76% 36% / 0.2));
-  transition: all 0.3s ease;
-}
-
-.template-metric-card:hover .template-metric-icon {
-  transform: scale(1.1);
-  color: hsl(142 76% 30%);
 }
 
 .template-metric-badge {
-  background: linear-gradient(135deg, hsl(142 76% 92%), hsl(142 76% 95%));
-  color: hsl(142 76% 25%);
-  padding: 14px 18px;
-  border-radius: 25px;
-  font-size: 10px;
-  font-weight: 800;
+  background-color: hsl(142 76% 92%);
+  color: hsl(142 76% 30%);
+  padding: 12px 16px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.8px;
+  letter-spacing: 0.6px;
   margin-left: 8px;
   white-space: nowrap;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
   line-height: normal;
   min-height: auto;
   vertical-align: middle;
   box-sizing: border-box;
   flex-shrink: 0;
-  border: 1px solid hsl(142 76% 80%);
-  box-shadow: 
-    0 2px 8px -2px hsl(142 76% 36% / 0.2),
-    inset 0 1px 0 0 hsl(0 0% 100% / 0.5);
-  transition: all 0.3s ease;
-}
-
-.template-metric-badge:hover {
-  transform: scale(1.05);
-  box-shadow: 
-    0 4px 12px -2px hsl(142 76% 36% / 0.3),
-    inset 0 1px 0 0 hsl(0 0% 100% / 0.7);
+  border: 1px solid hsl(142 76% 75%);
 }
 
 .template-badge-icon {
@@ -246,35 +203,26 @@
 }
 
 .template-metric-badge.primary {
-  background: linear-gradient(135deg, hsl(199 89% 88%), hsl(199 89% 92%));
-  color: hsl(199 89% 20%);
-  border: 1px solid hsl(199 89% 75%);
-  box-shadow: 
-    0 2px 8px -2px hsl(199 89% 48% / 0.2),
-    inset 0 1px 0 0 hsl(0 0% 100% / 0.5);
+  background-color: hsl(199 89% 88%);
+  color: hsl(199 89% 25%);
+  border: 1px solid hsl(199 89% 70%);
 }
 
 .template-metric-badge.success {
-  background: linear-gradient(135deg, hsl(142 76% 88%), hsl(142 76% 92%));
-  color: hsl(142 76% 20%);
-  border: 1px solid hsl(142 76% 75%);
-  box-shadow: 
-    0 2px 8px -2px hsl(142 76% 36% / 0.2),
-    inset 0 1px 0 0 hsl(0 0% 100% / 0.5);
+  background-color: hsl(142 76% 88%);
+  color: hsl(142 76% 25%);
+  border: 1px solid hsl(142 76% 70%);
 }
 
 .template-metric-badge.warning {
-  background: linear-gradient(135deg, hsl(48 96% 85%), hsl(48 96% 90%));
-  color: hsl(48 96% 20%);
-  border: 1px solid hsl(48 96% 75%);
-  box-shadow: 
-    0 2px 8px -2px hsl(48 96% 53% / 0.2),
-    inset 0 1px 0 0 hsl(0 0% 100% / 0.5);
+  background-color: hsl(48 96% 85%);
+  color: hsl(48 96% 25%);
+  border: 1px solid hsl(48 96% 70%);
 }
 
 .template-metric-value {
-  font-size: 44px;
-  font-weight: 900;
+  font-size: 40px;
+  font-weight: 800;
   color: hsl(210 40% 8%);
   line-height: 1;
   margin: 0;
@@ -285,34 +233,19 @@
   justify-content: center;
   min-height: auto;
   box-sizing: border-box;
-  text-shadow: 0 2px 4px hsl(210 40% 8% / 0.1);
-  position: relative;
-}
-
-.template-metric-value::after {
-  content: '';
-  position: absolute;
-  bottom: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 60%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, hsl(142 76% 36%), transparent);
-  border-radius: 1px;
 }
 
 .template-metric-unit {
   font-size: 13px;
-  color: hsl(210 40% 45%);
+  color: hsl(210 40% 50%);
   font-weight: 600;
   text-transform: lowercase;
   text-align: center;
   margin: 0;
-  line-height: 1.4;
+  line-height: 1.3;
   min-height: auto;
   box-sizing: border-box;
-  letter-spacing: 0.4px;
-  opacity: 0.85;
+  letter-spacing: 0.3px;
 }
 
 .template-metric-dual {
