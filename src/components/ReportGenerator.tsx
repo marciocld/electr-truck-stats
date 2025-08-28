@@ -169,81 +169,184 @@ export const ReportGenerator = () => {
             }}
             data-page="1"
           >
-            {/* Header Simplificado */}
+            {/* Header Corporativo */}
             <div 
-              className="relative mb-12"
+              className="relative mb-16"
               style={{
                 position: 'relative',
-                marginBottom: '48px'
+                marginBottom: '64px',
+                borderBottom: '1px solid #e5e7eb'
               }}
             >
-              {/* Conteúdo do cabeçalho */}
+              {/* Logo e identificação da empresa */}
               <div 
-                className="flex justify-between items-center"
+                className="flex items-center justify-between mb-8"
                 style={{
                   display: 'flex',
-                  justifyContent: 'space-between',
                   alignItems: 'center',
-                  paddingBottom: '24px',
-                  borderBottom: '2px solid #e5e7eb'
+                  justifyContent: 'space-between',
+                  marginBottom: '32px'
                 }}
               >
-                <div>
+                <div 
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '16px'
+                  }}
+                >
                   <img 
                     src={companyLogo} 
                     alt="Logo da Empresa" 
-                    className="h-8 w-auto"
                     style={{
-                      height: '32px',
+                      height: '40px',
                       width: 'auto',
                       display: 'block'
                     }}
                   />
+                  <div 
+                    style={{
+                      borderLeft: '2px solid #e5e7eb',
+                      paddingLeft: '16px'
+                    }}
+                  >
+                    <div 
+                      style={{
+                        fontSize: '14px',
+                        color: '#6b7280',
+                        fontWeight: '500',
+                        textTransform: 'uppercase',
+                        letterSpacing: '1px',
+                        marginBottom: '4px'
+                      }}
+                    >
+                      Relatório Corporativo
+                    </div>
+                    <div 
+                      style={{
+                        fontSize: '12px',
+                        color: '#9ca3af',
+                        fontWeight: '400'
+                      }}
+                    >
+                      Análise de Consumo Energético
+                    </div>
+                  </div>
                 </div>
                 
                 <div 
-                  className="text-right"
                   style={{
-                    textAlign: 'right'
+                    textAlign: 'right',
+                    padding: '16px 20px',
+                    backgroundColor: '#f8fafc',
+                    borderRadius: '8px',
+                    border: '1px solid #e5e7eb'
                   }}
                 >
                   <div 
                     style={{
-                      fontSize: '16px',
+                      fontSize: '12px',
                       color: '#6b7280',
                       fontWeight: '500',
+                      textTransform: 'uppercase',
+                      letterSpacing: '0.5px',
                       marginBottom: '4px'
                     }}
                   >
-                    Período: {period}
+                    Período de Análise
                   </div>
                   <div 
                     style={{
-                      fontSize: '12px',
+                      fontSize: '18px',
+                      color: '#111827',
+                      fontWeight: '700',
+                      marginBottom: '2px'
+                    }}
+                  >
+                    {period}
+                  </div>
+                  <div 
+                    style={{
+                      fontSize: '11px',
                       color: '#9ca3af',
                       fontWeight: '400'
                     }}
                   >
-                    Gerado em: {new Date().toLocaleDateString('pt-BR')}
+                    Gerado em {new Date().toLocaleDateString('pt-BR')}
                   </div>
                 </div>
               </div>
-            </div>
 
-            {/* Summary Section Simplificada */}
-            <div className="mb-12">
-              <h2 
+              {/* Título principal */}
+              <div 
                 style={{
-                  fontSize: '24px',
-                  fontWeight: '600',
-                  color: '#111827',
-                  marginBottom: '32px',
                   textAlign: 'center',
-                  margin: '0 0 32px 0'
+                  paddingBottom: '32px'
                 }}
               >
-                Resumo
-              </h2>
+                <h1 
+                  style={{
+                    fontSize: '32px',
+                    fontWeight: '300',
+                    color: '#111827',
+                    letterSpacing: '0.5px',
+                    margin: '0 0 8px 0',
+                    lineHeight: '1.2'
+                  }}
+                >
+                  RELATÓRIO DE DESEMPENHO
+                </h1>
+                <div 
+                  style={{
+                    width: '80px',
+                    height: '2px',
+                    backgroundColor: '#3b82f6',
+                    margin: '16px auto 0 auto'
+                  }}
+                ></div>
+              </div>
+            </div>
+
+            {/* Seção de Indicadores */}
+            <div className="mb-16">
+              <div 
+                style={{
+                  marginBottom: '40px',
+                  textAlign: 'left'
+                }}
+              >
+                <h2 
+                  style={{
+                    fontSize: '24px',
+                    fontWeight: '600',
+                    color: '#111827',
+                    marginBottom: '8px',
+                    textTransform: 'uppercase',
+                    letterSpacing: '1px'
+                  }}
+                >
+                  Indicadores Chave
+                </h2>
+                <div 
+                  style={{
+                    width: '60px',
+                    height: '3px',
+                    backgroundColor: '#3b82f6',
+                    marginBottom: '24px'
+                  }}
+                ></div>
+                <p 
+                  style={{
+                    fontSize: '14px',
+                    color: '#6b7280',
+                    fontWeight: '400',
+                    lineHeight: '1.5',
+                    margin: '0'
+                  }}
+                >
+                  Principais métricas de performance e eficiência operacional do período analisado.
+                </p>
+              </div>
               
               {/* Grid de cards reorganizados em 3x2 */}
               <div className="space-y-8">
@@ -252,38 +355,39 @@ export const ReportGenerator = () => {
                   <div 
                     className="bg-white border border-border rounded-lg p-6 text-center"
                     style={{
-                      background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '12px',
-                      padding: '32px',
+                      background: '#ffffff',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '4px',
+                      padding: '28px 20px',
                       textAlign: 'center',
                       display: 'block',
                       visibility: 'visible',
                       opacity: 1,
                       position: 'relative',
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                      borderTop: '4px solid #22c55e'
                     }}
                   >
                     <h3 
                       style={{
                         color: '#6b7280',
-                        fontSize: '14px',
-                        marginBottom: '12px',
-                        fontWeight: '500',
+                        fontSize: '11px',
+                        marginBottom: '16px',
+                        fontWeight: '600',
                         textTransform: 'uppercase',
-                        letterSpacing: '0.5px',
-                        margin: '0 0 12px 0'
+                        letterSpacing: '1px',
+                        margin: '0 0 16px 0'
                       }}
                     >
                       Distância Total
                     </h3>
                     <p 
                       style={{
-                        color: '#22c55e',
-                        fontSize: '36px',
-                        fontWeight: '700',
-                        margin: '0 0 8px 0',
-                        lineHeight: '1'
+                        color: '#111827',
+                        fontSize: '42px',
+                        fontWeight: '300',
+                        margin: '0 0 4px 0',
+                        lineHeight: '1',
+                        fontFamily: '"SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif'
                       }}
                     >
                       {reportData.summary.totalDistance.toLocaleString('pt-BR')}
@@ -291,50 +395,53 @@ export const ReportGenerator = () => {
                     <p 
                       style={{
                         color: '#6b7280',
-                        fontSize: '16px',
+                        fontSize: '14px',
                         margin: '0',
-                        fontWeight: '500'
+                        fontWeight: '500',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
                       }}
                     >
-                      km
+                      Quilômetros
                     </p>
                   </div>
 
                   <div 
                     className="bg-white border border-border rounded-lg p-6 text-center"
                     style={{
-                      background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '12px',
-                      padding: '32px',
+                      background: '#ffffff',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '4px',
+                      padding: '28px 20px',
                       textAlign: 'center',
                       display: 'block',
                       visibility: 'visible',
                       opacity: 1,
                       position: 'relative',
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                      borderTop: '4px solid #3b82f6'
                     }}
                   >
                     <h3 
                       style={{
                         color: '#6b7280',
-                        fontSize: '14px',
-                        marginBottom: '12px',
-                        fontWeight: '500',
+                        fontSize: '11px',
+                        marginBottom: '16px',
+                        fontWeight: '600',
                         textTransform: 'uppercase',
-                        letterSpacing: '0.5px',
-                        margin: '0 0 12px 0'
+                        letterSpacing: '1px',
+                        margin: '0 0 16px 0'
                       }}
                     >
                       Consumo Total
                     </h3>
                     <p 
                       style={{
-                        color: '#22c55e',
-                        fontSize: '36px',
-                        fontWeight: '700',
-                        margin: '0 0 8px 0',
-                        lineHeight: '1'
+                        color: '#111827',
+                        fontSize: '42px',
+                        fontWeight: '300',
+                        margin: '0 0 4px 0',
+                        lineHeight: '1',
+                        fontFamily: '"SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif'
                       }}
                     >
                       {reportData.summary.totalConsumption.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
@@ -342,50 +449,53 @@ export const ReportGenerator = () => {
                     <p 
                       style={{
                         color: '#6b7280',
-                        fontSize: '16px',
+                        fontSize: '14px',
                         margin: '0',
-                        fontWeight: '500'
+                        fontWeight: '500',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
                       }}
                     >
-                      kWh
+                      Kilowatt-hora
                     </p>
                   </div>
 
                   <div 
                     className="bg-white border border-border rounded-lg p-6 text-center"
                     style={{
-                      background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '12px',
-                      padding: '32px',
+                      background: '#ffffff',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '4px',
+                      padding: '28px 20px',
                       textAlign: 'center',
                       display: 'block',
                       visibility: 'visible',
                       opacity: 1,
                       position: 'relative',
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                      borderTop: '4px solid #f59e0b'
                     }}
                   >
                     <h3 
                       style={{
                         color: '#6b7280',
-                        fontSize: '14px',
-                        marginBottom: '12px',
-                        fontWeight: '500',
+                        fontSize: '11px',
+                        marginBottom: '16px',
+                        fontWeight: '600',
                         textTransform: 'uppercase',
-                        letterSpacing: '0.5px',
-                        margin: '0 0 12px 0'
+                        letterSpacing: '1px',
+                        margin: '0 0 16px 0'
                       }}
                     >
-                      Eficiência
+                      Eficiência Energética
                     </h3>
                     <p 
                       style={{
-                        color: '#22c55e',
-                        fontSize: '36px',
-                        fontWeight: '700',
-                        margin: '0 0 8px 0',
-                        lineHeight: '1'
+                        color: '#111827',
+                        fontSize: '42px',
+                        fontWeight: '300',
+                        margin: '0 0 4px 0',
+                        lineHeight: '1',
+                        fontFamily: '"SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif'
                       }}
                     >
                       {reportData.summary.avgConsumptionPerKm.toFixed(3)}
@@ -393,12 +503,14 @@ export const ReportGenerator = () => {
                     <p 
                       style={{
                         color: '#6b7280',
-                        fontSize: '16px',
+                        fontSize: '14px',
                         margin: '0',
-                        fontWeight: '500'
+                        fontWeight: '500',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
                       }}
                     >
-                      kWh/km
+                      kWh por km
                     </p>
                   </div>
                 </div>
@@ -408,38 +520,39 @@ export const ReportGenerator = () => {
                   <div 
                     className="bg-white border border-border rounded-lg p-6 text-center"
                     style={{
-                      background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '12px',
-                      padding: '32px',
+                      background: '#ffffff',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '4px',
+                      padding: '28px 20px',
                       textAlign: 'center',
                       display: 'block',
                       visibility: 'visible',
                       opacity: 1,
                       position: 'relative',
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                      borderTop: '4px solid #8b5cf6'
                     }}
                   >
                     <h3 
                       style={{
                         color: '#6b7280',
-                        fontSize: '14px',
-                        marginBottom: '12px',
-                        fontWeight: '500',
+                        fontSize: '11px',
+                        marginBottom: '16px',
+                        fontWeight: '600',
                         textTransform: 'uppercase',
-                        letterSpacing: '0.5px',
-                        margin: '0 0 12px 0'
+                        letterSpacing: '1px',
+                        margin: '0 0 16px 0'
                       }}
                     >
                       Distância Média
                     </h3>
                     <p 
                       style={{
-                        color: '#22c55e',
-                        fontSize: '36px',
-                        fontWeight: '700',
-                        margin: '0 0 8px 0',
-                        lineHeight: '1'
+                        color: '#111827',
+                        fontSize: '42px',
+                        fontWeight: '300',
+                        margin: '0 0 4px 0',
+                        lineHeight: '1',
+                        fontFamily: '"SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif'
                       }}
                     >
                       {reportData.summary.avgDistance.toLocaleString('pt-BR')}
@@ -447,50 +560,53 @@ export const ReportGenerator = () => {
                     <p 
                       style={{
                         color: '#6b7280',
-                        fontSize: '16px',
+                        fontSize: '14px',
                         margin: '0',
-                        fontWeight: '500'
+                        fontWeight: '500',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
                       }}
                     >
-                      km
+                      Quilômetros
                     </p>
                   </div>
 
                   <div 
                     className="bg-white border border-border rounded-lg p-6 text-center"
                     style={{
-                      background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)',
-                      border: '1px solid #e2e8f0',
-                      borderRadius: '12px',
-                      padding: '32px',
+                      background: '#ffffff',
+                      border: '1px solid #e5e7eb',
+                      borderRadius: '4px',
+                      padding: '28px 20px',
                       textAlign: 'center',
                       display: 'block',
                       visibility: 'visible',
                       opacity: 1,
                       position: 'relative',
-                      boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)'
+                      borderTop: '4px solid #ef4444'
                     }}
                   >
                     <h3 
                       style={{
                         color: '#6b7280',
-                        fontSize: '14px',
-                        marginBottom: '12px',
-                        fontWeight: '500',
+                        fontSize: '11px',
+                        marginBottom: '16px',
+                        fontWeight: '600',
                         textTransform: 'uppercase',
-                        letterSpacing: '0.5px',
-                        margin: '0 0 12px 0'
+                        letterSpacing: '1px',
+                        margin: '0 0 16px 0'
                       }}
                     >
                       Consumo Médio
                     </h3>
                     <p 
                       style={{
-                        color: '#22c55e',
-                        fontSize: '36px',
-                        fontWeight: '700',
-                        margin: '0 0 8px 0',
-                        lineHeight: '1'
+                        color: '#111827',
+                        fontSize: '42px',
+                        fontWeight: '300',
+                        margin: '0 0 4px 0',
+                        lineHeight: '1',
+                        fontFamily: '"SF Pro Display", -apple-system, BlinkMacSystemFont, sans-serif'
                       }}
                     >
                       {reportData.summary.avgConsumption.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
@@ -498,12 +614,14 @@ export const ReportGenerator = () => {
                     <p 
                       style={{
                         color: '#6b7280',
-                        fontSize: '16px',
+                        fontSize: '14px',
                         margin: '0',
-                        fontWeight: '500'
+                        fontWeight: '500',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
                       }}
                     >
-                      kWh
+                      Kilowatt-hora
                     </p>
                   </div>
                 </div>
