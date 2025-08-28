@@ -363,16 +363,12 @@
   .html2canvas-render {
     /* Forçar alinhamento vertical usando line-height */
     line-height: 1 !important;
-    transform: translateZ(0) !important;
   }
   
   /* Forçar line-height normal para todos os elementos */
   .html2canvas-render * {
-    line-height: 1 !important;
+    line-height: normal !important;
     vertical-align: baseline !important;
-    transform: translateY(0) !important;
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
   }
   
   /* Estilos específicos para tabelas */
@@ -401,13 +397,12 @@
     justify-content: space-between !important;
     align-items: center !important;
     margin-bottom: 0 !important;
-    vertical-align: baseline !important;
+    vertical-align: middle !important;
     min-height: auto !important;
     box-sizing: border-box !important;
     width: 100% !important;
-    line-height: 1 !important;
+    line-height: normal !important;
     height: auto !important;
-    transform: translateY(0) !important;
   }
   
   .html2canvas-render .template-metric-title {
@@ -475,13 +470,12 @@
     width: 14px !important;
     height: 14px !important;
     color: #6b7280 !important;
-    vertical-align: baseline !important;
+    vertical-align: middle !important;
     align-self: center !important;
     flex-shrink: 0 !important;
     display: inline-block !important;
-    line-height: 1 !important;
+    line-height: normal !important;
     margin: 0 !important;
-    transform: translateY(0) !important;
   }
   
   .html2canvas-render .template-badge-icon {
@@ -489,11 +483,10 @@
     height: 14px !important;
     flex-shrink: 0 !important;
     display: inline-block !important;
-    vertical-align: baseline !important;
+    vertical-align: middle !important;
     align-self: center !important;
-    line-height: 1 !important;
+    line-height: normal !important;
     margin: 0 !important;
-    transform: translateY(0) !important;
   }
   
   .html2canvas-render .template-metric-card {
