@@ -12,11 +12,12 @@ const generateMockData = (period: string) => ({
   summary: {
     totalConsumption: 2847.5,
     totalDistance: 15420,
-    consumptionPerKm: 0.185,
+    avgConsumptionPerKm: 0.185,
+    avgConsumption: 284.75,
+    avgDistance: 1542,
   },
   detailedData: [
     {
-      serie: 'EV001',
       date: '2024-01-01',
       accumulatedDistance: 1250,
       accumulatedConsumption: 231.2,
@@ -25,7 +26,6 @@ const generateMockData = (period: string) => ({
       consumptionPerKm: 0.185,
     },
     {
-      serie: 'EV001',
       date: '2024-01-02',
       accumulatedDistance: 2480,
       accumulatedConsumption: 459.1,
@@ -34,37 +34,33 @@ const generateMockData = (period: string) => ({
       consumptionPerKm: 0.185,
     },
     {
-      serie: 'EV002',
-      date: '2024-01-01',
-      accumulatedDistance: 980,
-      accumulatedConsumption: 181.3,
-      distance: 980,
-      consumption: 181.3,
+      date: '2024-01-03',
+      accumulatedDistance: 3450,
+      accumulatedConsumption: 638.3,
+      distance: 970,
+      consumption: 179.2,
       consumptionPerKm: 0.185,
     },
     {
-      serie: 'EV002',
-      date: '2024-01-02',
-      accumulatedDistance: 2150,
-      accumulatedConsumption: 397.8,
+      date: '2024-01-04',
+      accumulatedDistance: 4620,
+      accumulatedConsumption: 854.7,
       distance: 1170,
-      consumption: 216.5,
+      consumption: 216.4,
       consumptionPerKm: 0.185,
     },
     {
-      serie: 'EV003',
-      date: '2024-01-01',
-      accumulatedDistance: 1450,
-      accumulatedConsumption: 268.3,
+      date: '2024-01-05',
+      accumulatedDistance: 6070,
+      accumulatedConsumption: 1123.0,
       distance: 1450,
       consumption: 268.3,
       consumptionPerKm: 0.185,
     },
     {
-      serie: 'EV003',
-      date: '2024-01-02',
-      accumulatedDistance: 2890,
-      accumulatedConsumption: 534.7,
+      date: '2024-01-06',
+      accumulatedDistance: 7510,
+      accumulatedConsumption: 1389.4,
       distance: 1440,
       consumption: 266.4,
       consumptionPerKm: 0.185,
@@ -121,21 +117,31 @@ export const ReportGenerator = () => {
           {/* Summary Section */}
           <div className="mb-12">
             <h2 className="text-2xl font-bold text-gray-900 mb-6">Resumo</h2>
-            <div className="grid grid-cols-3 gap-6">
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
-                <h3 className="text-sm text-gray-600 mb-2">Consumo Total</h3>
-                <p className="text-3xl font-bold text-primary">{reportData.summary.totalConsumption.toFixed(2)}</p>
-                <p className="text-gray-500 text-sm">kWh</p>
+            <div className="grid grid-cols-5 gap-4">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+                <h3 className="text-xs text-gray-600 mb-2">Consumo Total</h3>
+                <p className="text-2xl font-bold text-primary">{reportData.summary.totalConsumption.toFixed(2)}</p>
+                <p className="text-gray-500 text-xs">kWh</p>
               </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
-                <h3 className="text-sm text-gray-600 mb-2">Distância Total</h3>
-                <p className="text-3xl font-bold text-primary">{reportData.summary.totalDistance.toFixed(0)}</p>
-                <p className="text-gray-500 text-sm">km</p>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+                <h3 className="text-xs text-gray-600 mb-2">Distância Total</h3>
+                <p className="text-2xl font-bold text-primary">{reportData.summary.totalDistance.toFixed(0)}</p>
+                <p className="text-gray-500 text-xs">km</p>
               </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
-                <h3 className="text-sm text-gray-600 mb-2">Consumo por KM</h3>
-                <p className="text-3xl font-bold text-primary">{reportData.summary.consumptionPerKm.toFixed(3)}</p>
-                <p className="text-gray-500 text-sm">kWh/km</p>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+                <h3 className="text-xs text-gray-600 mb-2">Consumo Médio por KM</h3>
+                <p className="text-2xl font-bold text-primary">{reportData.summary.avgConsumptionPerKm.toFixed(3)}</p>
+                <p className="text-gray-500 text-xs">kWh/km</p>
+              </div>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+                <h3 className="text-xs text-gray-600 mb-2">Consumo Médio</h3>
+                <p className="text-2xl font-bold text-primary">{reportData.summary.avgConsumption.toFixed(2)}</p>
+                <p className="text-gray-500 text-xs">kWh</p>
+              </div>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
+                <h3 className="text-xs text-gray-600 mb-2">Distância Média</h3>
+                <p className="text-2xl font-bold text-primary">{reportData.summary.avgDistance.toFixed(0)}</p>
+                <p className="text-gray-500 text-xs">km</p>
               </div>
             </div>
           </div>
@@ -147,7 +153,6 @@ export const ReportGenerator = () => {
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Série</th>
                     <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Data</th>
                     <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">Dist. Acum.</th>
                     <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">Cons. Acum.</th>
@@ -159,7 +164,6 @@ export const ReportGenerator = () => {
                 <tbody className="divide-y divide-gray-200">
                   {reportData.detailedData.map((row, index) => (
                     <tr key={index} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm text-gray-900">{row.serie}</td>
                       <td className="px-4 py-3 text-sm text-gray-900">{row.date}</td>
                       <td className="px-4 py-3 text-sm text-gray-900 text-right">{row.accumulatedDistance.toFixed(0)}</td>
                       <td className="px-4 py-3 text-sm text-gray-900 text-right">{row.accumulatedConsumption.toFixed(2)}</td>
@@ -213,7 +217,7 @@ export const ReportGenerator = () => {
       </Card>
 
       {/* Preview Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
         <Card>
           <CardContent className="pt-6">
             <div className="text-center">
@@ -242,10 +246,34 @@ export const ReportGenerator = () => {
           <CardContent className="pt-6">
             <div className="text-center">
               <div className="text-2xl font-bold text-primary">
-                {reportData.summary.consumptionPerKm.toFixed(3)}
+                {reportData.summary.avgConsumptionPerKm.toFixed(3)}
               </div>
               <div className="text-sm text-muted-foreground">kWh/km</div>
-              <div className="text-xs text-muted-foreground mt-1">Consumo por KM</div>
+              <div className="text-xs text-muted-foreground mt-1">Consumo Médio por KM</div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary">
+                {reportData.summary.avgConsumption.toFixed(2)}
+              </div>
+              <div className="text-sm text-muted-foreground">kWh</div>
+              <div className="text-xs text-muted-foreground mt-1">Consumo Médio</div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardContent className="pt-6">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary">
+                {reportData.summary.avgDistance.toFixed(0)}
+              </div>
+              <div className="text-sm text-muted-foreground">km</div>
+              <div className="text-xs text-muted-foreground mt-1">Distância Média</div>
             </div>
           </CardContent>
         </Card>
