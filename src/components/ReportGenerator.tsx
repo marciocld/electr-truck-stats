@@ -531,118 +531,140 @@ export const ReportGenerator = () => {
                 <div>{reportData.detailedData.length} registros</div>
               </div>
             </div>
-            {/* Tabela redesenhada com melhor legibilidade */}
+            {/* Título da seção de dados */}
             <div 
-              className="border border-border rounded-xl overflow-hidden print:border-gray-300"
               style={{
-                border: '1px solid #e2e8f0',
-                borderRadius: '8px',
-                overflow: 'hidden',
-                background: 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)'
+                marginBottom: '32px'
+              }}
+            >
+              <h2 
+                style={{
+                  fontSize: '20px',
+                  fontWeight: '700',
+                  color: '#111827',
+                  marginBottom: '8px',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}
+              >
+                Dados Detalhados
+              </h2>
+              <div 
+                style={{
+                  width: '40px',
+                  height: '2px',
+                  backgroundColor: '#111827'
+                }}
+              ></div>
+            </div>
+
+            {/* Container da tabela */}
+            <div 
+              style={{
+                backgroundColor: '#ffffff',
+                border: '1px solid #e5e7eb',
+                borderRadius: '0',
+                overflow: 'hidden'
               }}
             >
               <table 
-                className="w-full"
                 style={{
                   width: '100%',
-                  borderCollapse: 'collapse'
+                  borderCollapse: 'collapse',
+                  margin: '0',
+                  fontSize: '13px'
                 }}
               >
-                <thead 
-                  style={{
-                    background: 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)'
-                  }}
-                >
-                  <tr>
+                <thead>
+                  <tr 
+                    style={{
+                      backgroundColor: '#f9fafb',
+                      borderBottom: '2px solid #111827'
+                    }}
+                  >
                     <th 
                       style={{
-                        padding: '14px 12px',
+                        padding: '16px 12px',
                         textAlign: 'center',
-                        fontSize: '12px',
+                        fontSize: '11px',
                         fontWeight: '700',
-                        color: '#1e293b',
-                        borderBottom: '2px solid #cbd5e1',
-                        width: '16%',
+                        color: '#111827',
                         textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
+                        letterSpacing: '1px',
+                        width: '16%'
                       }}
                     >
                       Data
                     </th>
                     <th 
                       style={{
-                        padding: '14px 12px',
+                        padding: '16px 12px',
                         textAlign: 'center',
-                        fontSize: '12px',
+                        fontSize: '11px',
                         fontWeight: '700',
-                        color: '#1e293b',
-                        borderBottom: '2px solid #cbd5e1',
-                        width: '17%',
+                        color: '#111827',
                         textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
+                        letterSpacing: '1px',
+                        width: '18%'
                       }}
                     >
                       Dist. Acum. (km)
                     </th>
                     <th 
                       style={{
-                        padding: '14px 12px',
+                        padding: '16px 12px',
                         textAlign: 'center',
-                        fontSize: '12px',
+                        fontSize: '11px',
                         fontWeight: '700',
-                        color: '#1e293b',
-                        borderBottom: '2px solid #cbd5e1',
-                        width: '17%',
+                        color: '#111827',
                         textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
+                        letterSpacing: '1px',
+                        width: '18%'
                       }}
                     >
                       Cons. Acum. (kWh)
                     </th>
                     <th 
                       style={{
-                        padding: '14px 12px',
+                        padding: '16px 12px',
                         textAlign: 'center',
-                        fontSize: '12px',
+                        fontSize: '11px',
                         fontWeight: '700',
-                        color: '#1e293b',
-                        borderBottom: '2px solid #cbd5e1',
-                        width: '16%',
+                        color: '#111827',
                         textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
+                        letterSpacing: '1px',
+                        width: '16%'
                       }}
                     >
                       Distância (km)
                     </th>
                     <th 
                       style={{
-                        padding: '14px 12px',
+                        padding: '16px 12px',
                         textAlign: 'center',
-                        fontSize: '12px',
+                        fontSize: '11px',
                         fontWeight: '700',
-                        color: '#1e293b',
-                        borderBottom: '2px solid #cbd5e1',
-                        width: '16%',
+                        color: '#111827',
                         textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
+                        letterSpacing: '1px',
+                        width: '16%'
                       }}
                     >
                       Consumo (kWh)
                     </th>
                     <th 
                       style={{
-                        padding: '14px 12px',
+                        padding: '16px 12px',
                         textAlign: 'center',
-                        fontSize: '12px',
+                        fontSize: '11px',
                         fontWeight: '700',
-                        color: '#1e293b',
-                        borderBottom: '2px solid #cbd5e1',
-                        width: '18%',
+                        color: '#111827',
                         textTransform: 'uppercase',
-                        letterSpacing: '0.5px'
+                        letterSpacing: '1px',
+                        width: '16%'
                       }}
                     >
-                      Eficiência (kWh/km)
+                      Eficiência
                     </th>
                   </tr>
                 </thead>
@@ -651,15 +673,15 @@ export const ReportGenerator = () => {
                     <tr 
                       key={index}
                       style={{
-                        backgroundColor: index % 2 === 0 ? '#ffffff' : '#f8fafc',
-                        borderBottom: '1px solid #e2e8f0'
+                        backgroundColor: index % 2 === 0 ? '#ffffff' : '#f9fafb',
+                        borderBottom: '1px solid #e5e7eb'
                       }}
                     >
                       <td 
                         style={{
-                          padding: '10px 8px',
+                          padding: '14px 12px',
                           textAlign: 'center',
-                          fontSize: '14px',
+                          fontSize: '13px',
                           color: '#111827',
                           fontWeight: '600'
                         }}
@@ -668,10 +690,10 @@ export const ReportGenerator = () => {
                       </td>
                       <td 
                         style={{
-                          padding: '10px 8px',
+                          padding: '14px 12px',
                           textAlign: 'center',
                           fontSize: '13px',
-                          color: '#4b5563',
+                          color: '#6b7280',
                           fontWeight: '500'
                         }}
                       >
@@ -679,10 +701,10 @@ export const ReportGenerator = () => {
                       </td>
                       <td 
                         style={{
-                          padding: '10px 8px',
+                          padding: '14px 12px',
                           textAlign: 'center',
                           fontSize: '13px',
-                          color: '#4b5563',
+                          color: '#6b7280',
                           fontWeight: '500'
                         }}
                       >
@@ -690,7 +712,7 @@ export const ReportGenerator = () => {
                       </td>
                       <td 
                         style={{
-                          padding: '10px 8px',
+                          padding: '14px 12px',
                           textAlign: 'center',
                           fontSize: '13px',
                           color: '#111827',
@@ -701,7 +723,7 @@ export const ReportGenerator = () => {
                       </td>
                       <td 
                         style={{
-                          padding: '10px 8px',
+                          padding: '14px 12px',
                           textAlign: 'center',
                           fontSize: '13px',
                           color: '#111827',
@@ -712,11 +734,11 @@ export const ReportGenerator = () => {
                       </td>
                       <td 
                         style={{
-                          padding: '10px 8px',
+                          padding: '14px 12px',
                           textAlign: 'center',
                           fontSize: '13px',
-                          color: '#3b82f6',
-                          fontWeight: '600'
+                          color: '#111827',
+                          fontWeight: '700'
                         }}
                       >
                         {row.consumptionPerKm.toFixed(3)}
@@ -727,11 +749,11 @@ export const ReportGenerator = () => {
               </table>
             </div>
             
-            {/* Rodapé da segunda página simplificado */}
+            {/* Rodapé da segunda página */}
             <div 
               style={{
-                marginTop: '40px',
-                paddingTop: '16px',
+                marginTop: '48px',
+                paddingTop: '20px',
                 borderTop: '1px solid #e5e7eb',
                 textAlign: 'center'
               }}
@@ -739,10 +761,11 @@ export const ReportGenerator = () => {
               <div 
                 style={{
                   fontSize: '11px',
-                  color: '#9ca3af'
+                  color: '#6b7280',
+                  fontWeight: '500'
                 }}
               >
-               • Dados baseados em telemetria do veículo
+                Dados baseados em telemetria do veículo
               </div>
             </div>
           </div>
