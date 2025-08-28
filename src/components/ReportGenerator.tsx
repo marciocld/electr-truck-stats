@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { PDFDownloadLink } from '@react-pdf/renderer';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { FileText, Download, Calendar, Building } from 'lucide-react';
-import PDFReport from './PDFReport';
 
 // Mock data for demonstration
 const generateMockData = (period: string) => ({
@@ -77,10 +75,7 @@ export const ReportGenerator = () => {
   const [period, setPeriod] = useState('Janeiro 2024');
   const [logoUrl, setLogoUrl] = useState('');
   
-  const reportData = {
-    ...generateMockData(period),
-    companyLogo: logoUrl || undefined,
-  };
+  const reportData = generateMockData(period);
 
   return (
     <div className="space-y-6">
@@ -121,17 +116,17 @@ export const ReportGenerator = () => {
           </div>
 
           <div className="pt-4">
-            <PDFDownloadLink
-              document={<PDFReport data={reportData} />}
-              fileName={`relatorio-consumo-${period.replace(/\s+/g, '-').toLowerCase()}.pdf`}
+            <Button 
+              className="w-full" 
+              onClick={() => {
+                // Aqui seria implementada a geração do PDF
+                console.log('Gerando relatório PDF para o período:', period);
+                alert(`Relatório para ${period} será gerado em breve!`);
+              }}
             >
-              {({ loading }) => (
-                <Button className="w-full" disabled={loading}>
-                  <Download className="h-4 w-4 mr-2" />
-                  {loading ? 'Gerando PDF...' : 'Baixar Relatório PDF'}
-                </Button>
-              )}
-            </PDFDownloadLink>
+              <Download className="h-4 w-4 mr-2" />
+              Gerar Relatório PDF
+            </Button>
           </div>
         </CardContent>
       </Card>
