@@ -310,6 +310,22 @@
   letter-spacing: 1.2px;
 }
 
+.template-table th:first-child {
+  border-top-left-radius: 10px;
+}
+
+.template-table th:last-child {
+  border-top-right-radius: 10px;
+}
+
+.template-table tr:last-child td:first-child {
+  border-bottom-left-radius: 10px;
+}
+
+.template-table tr:last-child td:last-child {
+  border-bottom-right-radius: 10px;
+}
+
 .template-table td {
   padding: 14px 12px;
   text-align: center;
