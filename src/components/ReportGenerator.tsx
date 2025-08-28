@@ -148,7 +148,7 @@ export const ReportGenerator = () => {
 
           {/* Detailed Data Section */}
           <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Dados Detalhados</h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Dados</h2>
             <div className="border border-gray-200 rounded-lg overflow-hidden">
               <table className="w-full">
                 <thead className="bg-gray-50">
