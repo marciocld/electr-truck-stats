@@ -268,36 +268,34 @@ export class PDFService {
         const page = pages[i] as HTMLElement;
         console.log(`Processando página ${i + 1}:`, page);
 
-        // Configurar a página para captura
+        // Configurar a página para captura - SEM forçar altura
         const originalStyle = page.style.cssText;
         page.style.display = 'block';
         page.style.visibility = 'visible';
         page.style.opacity = '1';
         page.style.position = 'relative';
         page.style.width = '100%';
-        page.style.height = 'auto';
+        // Remover height forçado para permitir altura natural
         page.style.overflow = 'visible';
 
-        // Obter dimensões reais da página
+        // Obter dimensões reais da página - SEM forçar altura mínima
         const pageRect = page.getBoundingClientRect();
-        const pageWidth = Math.max(794, pageRect.width);
-        const pageHeight = Math.max(1123, pageRect.height);
+        const pageWidth = pageRect.width || 794;
+        const pageHeight = pageRect.height || 1123;
         
         console.log(`Dimensões da página ${i + 1}: ${pageWidth}x${pageHeight}`);
 
-        // Capturar a página com dimensões dinâmicas
+        // Capturar a página com dimensões naturais
         const canvas = await html2canvas(page, {
           scale: this.options.scale || 2,
           useCORS: true,
           allowTaint: true,
           backgroundColor: '#ffffff',
           logging: false,
-          width: pageWidth,
-          height: pageHeight,
+          // Remover width e height forçados para permitir dimensões naturais
           scrollX: 0,
           scrollY: 0,
-          windowWidth: pageWidth,
-          windowHeight: pageHeight,
+          // Remover windowWidth e windowHeight forçados
           foreignObjectRendering: false,
           removeContainer: false,
           imageTimeout: 30000,
@@ -319,116 +317,169 @@ export class PDFService {
                   clonedPage.offsetHeight;
                   clonedPage.style.display = 'block';
                 }, 10);
-              // Configurações básicas da página
+              // Configurações básicas da página - SEM forçar altura
               clonedPage.style.transform = 'none';
               clonedPage.style.position = 'relative';
               clonedPage.style.width = '100%';
-              clonedPage.style.height = 'auto';
+              // Remover height forçado para permitir altura natural
               clonedPage.style.display = 'block';
               clonedPage.style.visibility = 'visible';
               clonedPage.style.opacity = '1';
               clonedPage.style.overflow = 'visible';
               clonedPage.style.backgroundColor = '#ffffff';
               
-              // Adicionar classe especial para html2canvas
-              clonedPage.classList.add('html2canvas-render');
+                             // Adicionar classe especial para html2canvas
+               clonedPage.classList.add('html2canvas-render');
+               
+               // Função para corrigir alinhamento de texto - SEM forçar altura
+               const fixTextAlignment = (element: HTMLElement) => {
+                 element.style.setProperty('line-height', 'normal', 'important');
+                 element.style.setProperty('vertical-align', 'baseline', 'important');
+                 // Remover height e min-height forçados para permitir altura natural
+                 element.style.setProperty('margin', '0', 'important');
+                 element.style.setProperty('padding-top', '0', 'important');
+                 element.style.setProperty('padding-bottom', '0', 'important');
+               };
               
-              // Garantir que todos os elementos tenham estilos inline preservados
-              const allElements = clonedPage.querySelectorAll('*');
-              allElements.forEach((element) => {
-                if (element instanceof HTMLElement) {
-                  // Preservar estilos inline existentes
-                  const computedStyle = window.getComputedStyle(element);
-                  const importantStyles = [
-                    'color', 'background-color', 'background', 'border', 'border-radius',
-                    'padding', 'margin', 'font-size', 'font-weight', 'text-align',
-                    'display', 'position', 'width', 'height', 'box-shadow'
-                  ];
-                  
-                  importantStyles.forEach(style => {
-                    const value = computedStyle.getPropertyValue(style);
-                    if (value && value !== 'initial' && value !== 'normal') {
-                      element.style.setProperty(style, value, 'important');
-                    }
-                  });
-                }
-              });
+                             // Garantir que todos os elementos tenham estilos inline preservados
+               const allElements = clonedPage.querySelectorAll('*');
+               allElements.forEach((element) => {
+                 if (element instanceof HTMLElement) {
+                   // Preservar estilos inline existentes
+                   const computedStyle = window.getComputedStyle(element);
+                   const importantStyles = [
+                     'color', 'background-color', 'background', 'border', 'border-radius',
+                     'padding', 'margin', 'font-size', 'font-weight', 'text-align',
+                     'display', 'position', 'width', 'height', 'box-shadow'
+                   ];
+                   
+                   importantStyles.forEach(style => {
+                     const value = computedStyle.getPropertyValue(style);
+                     if (value && value !== 'initial' && value !== 'normal') {
+                       element.style.setProperty(style, value, 'important');
+                     }
+                   });
+                   
+                   // Aplicar correção de alinhamento
+                   fixTextAlignment(element);
+                 }
+               });
               
               // Preservar especificamente os cards de métricas com sombras e bordas
-              const metricCards = clonedPage.querySelectorAll('.template-metric-card');
-              metricCards.forEach((card) => {
+              const metricCardsInitial = clonedPage.querySelectorAll('.template-metric-card');
+              metricCardsInitial.forEach((card) => {
                 if (card instanceof HTMLElement) {
                   // Usar CSS classes ao invés de inline styles para melhor estabilidade
                   card.classList.add('html2canvas-render');
                   
-                  // Apenas os estilos essenciais inline
-                  card.style.setProperty('background-color', '#ffffff', 'important');
-                  card.style.setProperty('border', '1px solid #e5e7eb', 'important');
-                  card.style.setProperty('border-radius', '8px', 'important');
-                  card.style.setProperty('box-shadow', '0 1px 3px 0 rgba(0, 0, 0, 0.1)', 'important');
-                  card.style.setProperty('display', 'flex', 'important');
-                  card.style.setProperty('flex-direction', 'column', 'important');
-                  card.style.setProperty('height', '160px', 'important');
-                  card.style.setProperty('justify-content', 'space-between', 'important');
-                  card.style.setProperty('padding', '24px 20px', 'important');
-                  card.style.setProperty('box-sizing', 'border-box', 'important');
+                                     // Apenas os estilos essenciais inline - SEM altura fixa para permitir alinhamento natural
+                   card.style.setProperty('background-color', '#ffffff', 'important');
+                   card.style.setProperty('border', '1px solid #e5e7eb', 'important');
+                   card.style.setProperty('border-radius', '8px', 'important');
+                   card.style.setProperty('box-shadow', '0 1px 3px 0 rgba(0, 0, 0, 0.1)', 'important');
+                   card.style.setProperty('display', 'flex', 'important');
+                   card.style.setProperty('flex-direction', 'column', 'important');
+                   // Remover height e min-height forçados para permitir altura natural
+                   card.style.setProperty('justify-content', 'flex-start', 'important');
+                   card.style.setProperty('padding', '24px 20px', 'important');
+                   card.style.setProperty('box-sizing', 'border-box', 'important');
+                   card.style.setProperty('gap', '16px', 'important');
                 }
               });
               
-              // Preservar tabela usando classes CSS
-              const table = clonedPage.querySelector('.template-table');
-              if (table instanceof HTMLElement) {
-                table.style.width = '100%';
-                table.style.borderCollapse = 'collapse';
-                table.style.fontSize = '13px';
-              }
+                             // Preservar tabela usando classes CSS
+               const table = clonedPage.querySelector('.template-table');
+               if (table instanceof HTMLElement) {
+                                   table.style.cssText = `
+                    width: 100% !important;
+                    border-collapse: collapse !important;
+                    font-size: 13px !important;
+                    line-height: normal !important;
+                    vertical-align: baseline !important;
+                    box-sizing: border-box !important;
+                    margin: 0 !important;
+                    display: table !important;
+                    position: relative !important;
+                  `;
+               }
               
-              // Preservar cabeçalho da tabela
-              const tableHeaders = clonedPage.querySelectorAll('.template-table th');
-              tableHeaders.forEach((th) => {
-                if (th instanceof HTMLElement) {
-                  th.style.backgroundColor = '#f9fafb';
-                  th.style.borderBottom = '2px solid #111827';
-                  th.style.padding = '16px 12px';
-                  th.style.textAlign = 'center';
-                  th.style.fontSize = '11px';
-                  th.style.fontWeight = '700';
-                  th.style.color = '#111827';
-                  th.style.textTransform = 'uppercase';
-                  th.style.letterSpacing = '1px';
-                }
-              });
+                             // Preservar cabeçalho da tabela
+               const tableHeaders = clonedPage.querySelectorAll('.template-table th');
+               tableHeaders.forEach((th) => {
+                 if (th instanceof HTMLElement) {
+                                       th.style.cssText = `
+                      background-color: #f9fafb !important;
+                      border-bottom: 2px solid #111827 !important;
+                      padding: 16px 12px !important;
+                      text-align: center !important;
+                      font-size: 11px !important;
+                      font-weight: 700 !important;
+                      color: #111827 !important;
+                      text-transform: uppercase !important;
+                      letter-spacing: 1px !important;
+                      line-height: normal !important;
+                      vertical-align: middle !important;
+                      box-sizing: border-box !important;
+                      margin: 0 !important;
+                      display: table-cell !important;
+                      position: relative !important;
+                    `;
+                 }
+               });
               
-              // Preservar células da tabela
-              const tableCells = clonedPage.querySelectorAll('.template-table td');
-              tableCells.forEach((td) => {
-                if (td instanceof HTMLElement) {
-                  const row = td.parentElement;
-                  const rowIndex = Array.from(row?.parentElement?.children || []).indexOf(row!);
-                  const cellIndex = Array.from(row?.children || []).indexOf(td);
-                  
-                  td.style.padding = '14px 12px';
-                  td.style.textAlign = 'center';
-                  td.style.fontSize = '13px';
-                  td.style.borderBottom = rowIndex === (row?.parentElement?.children.length || 0) - 1 ? 'none' : '1px solid #e5e7eb';
-                  td.style.backgroundColor = rowIndex % 2 === 0 ? '#ffffff' : '#f9fafb';
-                  
-                  // Aplicar cores específicas baseadas na posição
-                  if (cellIndex === 0) {
-                    td.style.color = '#111827';
-                    td.style.fontWeight = '600';
-                  } else if (cellIndex === 1 || cellIndex === 2) {
-                    td.style.color = '#6b7280';
-                    td.style.fontWeight = '500';
-                  } else if (cellIndex === 3 || cellIndex === 4) {
-                    td.style.color = '#111827';
-                    td.style.fontWeight = '600';
-                  } else if (cellIndex === 5) {
-                    td.style.color = '#111827';
-                    td.style.fontWeight = '700';
-                  }
-                }
-              });
+                             // Preservar linhas da tabela
+               const tableRows = clonedPage.querySelectorAll('.template-table tr');
+               tableRows.forEach((tr) => {
+                 if (tr instanceof HTMLElement) {
+                                       tr.style.cssText = `
+                      line-height: normal !important;
+                      vertical-align: baseline !important;
+                      box-sizing: border-box !important;
+                      margin: 0 !important;
+                      display: table-row !important;
+                      position: relative !important;
+                    `;
+                 }
+               });
+               
+               // Preservar células da tabela
+               const tableCells = clonedPage.querySelectorAll('.template-table td');
+               tableCells.forEach((td) => {
+                 if (td instanceof HTMLElement) {
+                   const row = td.parentElement;
+                   const rowIndex = Array.from(row?.parentElement?.children || []).indexOf(row!);
+                   const cellIndex = Array.from(row?.children || []).indexOf(td);
+                   
+                                       td.style.cssText = `
+                      padding: 14px 12px !important;
+                      text-align: center !important;
+                      font-size: 13px !important;
+                      border-bottom: ${rowIndex === (row?.parentElement?.children.length || 0) - 1 ? 'none' : '1px solid #e5e7eb'} !important;
+                      background-color: ${rowIndex % 2 === 0 ? '#ffffff' : '#f9fafb'} !important;
+                      line-height: normal !important;
+                      vertical-align: middle !important;
+                      box-sizing: border-box !important;
+                      margin: 0 !important;
+                      display: table-cell !important;
+                      position: relative !important;
+                    `;
+                   
+                   // Aplicar cores específicas baseadas na posição
+                   if (cellIndex === 0) {
+                     td.style.color = '#111827 !important';
+                     td.style.fontWeight = '600 !important';
+                   } else if (cellIndex === 1 || cellIndex === 2) {
+                     td.style.color = '#6b7280 !important';
+                     td.style.fontWeight = '500 !important';
+                   } else if (cellIndex === 3 || cellIndex === 4) {
+                     td.style.color = '#111827 !important';
+                     td.style.fontWeight = '600 !important';
+                   } else if (cellIndex === 5) {
+                     td.style.color = '#111827 !important';
+                     td.style.fontWeight = '700 !important';
+                   }
+                 }
+               });
               
               // Preservar logo
               const logo = clonedPage.querySelector('.template-logo');
@@ -452,14 +503,148 @@ export class PDFService {
                 }
               });
               
-              // Usar classes CSS para elementos dos cards ao invés de inline styles
-              const metricElements = clonedPage.querySelectorAll(
-                '.template-metric-value, .template-metric-unit, .template-metric-title, .template-metric-badge, .template-metric-header, .template-metric-icon, .template-badge-icon'
-              );
-              
-              metricElements.forEach((element) => {
-                if (element instanceof HTMLElement) {
-                  element.classList.add('html2canvas-render');
+              // Configurar elementos específicos dos cards para melhor alinhamento
+              const metricCards = clonedPage.querySelectorAll('.template-metric-card');
+              metricCards.forEach((card) => {
+                if (card instanceof HTMLElement) {
+                                     // Resetar completamente o layout do card - SEM altura fixa
+                                       card.style.cssText = `
+                      background-color: #ffffff !important;
+                      border: 1px solid #e5e7eb !important;
+                      border-radius: 8px !important;
+                      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+                      display: flex !important;
+                      flex-direction: column !important;
+                      padding: 24px 20px !important;
+                      box-sizing: border-box !important;
+                      gap: 16px !important;
+                      justify-content: flex-start !important;
+                      position: relative !important;
+                      overflow: visible !important;
+                      align-items: stretch !important;
+                    `;
+                  
+                    // Configurar header
+                   const header = card.querySelector('.template-metric-header');
+                   if (header instanceof HTMLElement) {
+                                                                                       header.style.cssText = `
+                         display: flex !important;
+                         justify-content: space-between !important;
+                         align-items: center !important;
+                         margin: 0 !important;
+                         padding: 0 !important;
+                         line-height: normal !important;
+                         box-sizing: border-box !important;
+                         width: 100% !important;
+                         flex-shrink: 0 !important;
+                         flex: none !important;
+                       `;
+                   }
+                  
+                  // Configurar título
+                  const title = card.querySelector('.template-metric-title');
+                  if (title instanceof HTMLElement) {
+                                                                                   title.style.cssText = `
+                        font-size: 12px !important;
+                        color: #6b7280 !important;
+                        font-weight: 600 !important;
+                        text-transform: uppercase !important;
+                        letter-spacing: 0.5px !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        flex: 1 !important;
+                        display: flex !important;
+                        align-items: center !important;
+                        gap: 6px !important;
+                        line-height: normal !important;
+                        box-sizing: border-box !important;
+                        width: auto !important;
+                      `;
+                  }
+                  
+                  // Configurar badge
+                  const badge = card.querySelector('.template-metric-badge');
+                  if (badge instanceof HTMLElement) {
+                                                                                   badge.style.cssText = `
+                        background-color: #f3f4f6 !important;
+                        color: #374151 !important;
+                        padding: 10px 14px !important;
+                        border-radius: 12px !important;
+                        font-size: 10px !important;
+                        font-weight: 600 !important;
+                        text-transform: uppercase !important;
+                        letter-spacing: 0.5px !important;
+                        margin: 0 0 0 8px !important;
+                        white-space: nowrap !important;
+                        display: flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        gap: 6px !important;
+                        line-height: normal !important;
+                        box-sizing: border-box !important;
+                        flex-shrink: 0 !important;
+                        width: auto !important;
+                      `;
+                  }
+                  
+                  // Configurar valor principal
+                  const value = card.querySelector('.template-metric-value');
+                  if (value instanceof HTMLElement) {
+                                                                                   value.style.cssText = `
+                        font-size: 32px !important;
+                        font-weight: 700 !important;
+                        color: #111827 !important;
+                        line-height: 1 !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        font-family: system-ui, -apple-system, sans-serif !important;
+                        flex: none !important;
+                        display: flex !important;
+                        align-items: center !important;
+                        justify-content: center !important;
+                        box-sizing: border-box !important;
+                        width: 100% !important;
+                        flex-shrink: 0 !important;
+                      `;
+                  }
+                  
+                  // Configurar unidade
+                  const unit = card.querySelector('.template-metric-unit');
+                  if (unit instanceof HTMLElement) {
+                                                                                   unit.style.cssText = `
+                        font-size: 12px !important;
+                        color: #6b7280 !important;
+                        font-weight: 500 !important;
+                        text-transform: lowercase !important;
+                        text-align: center !important;
+                        margin: 0 !important;
+                        padding: 0 !important;
+                        line-height: 1.2 !important;
+                        box-sizing: border-box !important;
+                        width: 100% !important;
+                        flex: none !important;
+                        flex-shrink: 0 !important;
+                      `;
+                  }
+                  
+                                     // Configurar ícones
+                   const icons = card.querySelectorAll('.template-metric-icon, .template-badge-icon');
+                   icons.forEach((icon) => {
+                     if (icon instanceof HTMLElement) {
+                       icon.style.cssText = `
+                         width: 14px !important;
+                         height: 14px !important;
+                         flex-shrink: 0 !important;
+                         display: inline-block !important;
+                         vertical-align: middle !important;
+                         align-self: center !important;
+                         line-height: normal !important;
+                         margin: 0 !important;
+                         padding: 0 !important;
+                         color: #6b7280 !important;
+                       `;
+                     }
+                   });
                 }
               });
             }
@@ -487,7 +672,7 @@ export class PDFService {
           this.doc.addPage();
         }
 
-        // Calcular dimensões proporcionais para o PDF
+        // Calcular dimensões proporcionais para o PDF - SEM forçar altura
         const pdfWidth = 210; // A4 width in mm
         const pdfHeight = 297; // A4 height in mm
         
@@ -497,6 +682,7 @@ export class PDFService {
         
         let finalWidth, finalHeight;
         
+        // Permitir que a imagem mantenha suas proporções naturais
         if (imgRatio > pdfRatio) {
           // Imagem é mais larga - ajustar pela largura
           finalWidth = pdfWidth;

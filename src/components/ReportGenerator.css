@@ -89,17 +89,20 @@
   position: relative;
   overflow: hidden;
   box-sizing: border-box;
-  height: 160px;
-  justify-content: space-between;
+  height: auto;
+  min-height: auto;
+  justify-content: flex-start;
+  gap: 16px;
+  align-items: stretch;
 }
 
 .template-metric-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 16px;
+  margin-bottom: 0;
   vertical-align: middle;
-  min-height: 32px;
+  min-height: auto;
   box-sizing: border-box;
   width: 100%;
 }
@@ -115,9 +118,9 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  line-height: 1;
+  line-height: normal;
   vertical-align: middle;
-  min-height: 32px;
+  min-height: auto;
   box-sizing: border-box;
 }
 
@@ -129,6 +132,7 @@
   align-self: center;
   flex-shrink: 0;
   display: inline-block;
+  line-height: normal;
 }
 
 .template-metric-badge {
@@ -146,8 +150,8 @@
   align-items: center;
   justify-content: center;
   gap: 6px;
-  line-height: 1;
-  min-height: 32px;
+  line-height: normal;
+  min-height: auto;
   vertical-align: middle;
   box-sizing: border-box;
   flex-shrink: 0;
@@ -160,6 +164,7 @@
   display: inline-block;
   vertical-align: middle;
   align-self: center;
+  line-height: normal;
 }
 
 .template-metric-badge.primary {
@@ -184,11 +189,11 @@
   line-height: 1;
   margin: 0;
   font-family: system-ui, -apple-system, sans-serif;
-  flex: 1;
+  flex: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 40px;
+  min-height: auto;
   box-sizing: border-box;
 }
 
@@ -200,7 +205,7 @@
   text-align: center;
   margin: 0;
   line-height: 1.2;
-  min-height: 16px;
+  min-height: auto;
   box-sizing: border-box;
 }
 
@@ -301,17 +306,44 @@
     line-height: 1 !important;
   }
   
+  /* Forçar line-height normal para todos os elementos */
+  .html2canvas-render * {
+    line-height: normal !important;
+    vertical-align: baseline !important;
+  }
+  
+  /* Estilos específicos para tabelas */
+  .html2canvas-render .template-table {
+    line-height: normal !important;
+    vertical-align: baseline !important;
+  }
+  
+  .html2canvas-render .template-table tr {
+    line-height: normal !important;
+    vertical-align: baseline !important;
+    height: auto !important;
+    min-height: auto !important;
+  }
+  
+  .html2canvas-render .template-table th,
+  .html2canvas-render .template-table td {
+    line-height: normal !important;
+    vertical-align: middle !important;
+    height: auto !important;
+    min-height: auto !important;
+  }
+  
   .html2canvas-render .template-metric-header {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    margin-bottom: 16px !important;
+    margin-bottom: 0 !important;
     vertical-align: middle !important;
-    min-height: 32px !important;
+    min-height: auto !important;
     box-sizing: border-box !important;
     width: 100% !important;
-    line-height: 32px !important;
-    height: 32px !important;
+    line-height: normal !important;
+    height: auto !important;
   }
   
   .html2canvas-render .template-metric-title {
@@ -326,10 +358,10 @@
     align-items: center !important;
     justify-content: flex-start !important;
     gap: 6px !important;
-    line-height: 32px !important;
+    line-height: normal !important;
     vertical-align: middle !important;
-    min-height: 32px !important;
-    height: 32px !important;
+    min-height: auto !important;
+    height: auto !important;
     box-sizing: border-box !important;
   }
   
@@ -348,9 +380,9 @@
     align-items: center !important;
     justify-content: center !important;
     gap: 6px !important;
-    line-height: 32px !important;
-    min-height: 32px !important;
-    height: 32px !important;
+    line-height: normal !important;
+    min-height: auto !important;
+    height: auto !important;
     vertical-align: middle !important;
     box-sizing: border-box !important;
     flex-shrink: 0 !important;
@@ -379,7 +411,7 @@
     align-self: center !important;
     flex-shrink: 0 !important;
     display: inline-block !important;
-    line-height: 32px !important;
+    line-height: normal !important;
     margin: 0 !important;
   }
   
@@ -390,17 +422,20 @@
     display: inline-block !important;
     vertical-align: middle !important;
     align-self: center !important;
-    line-height: 32px !important;
+    line-height: normal !important;
     margin: 0 !important;
   }
   
   .html2canvas-render .template-metric-card {
     display: flex !important;
     flex-direction: column !important;
-    height: 160px !important;
-    justify-content: space-between !important;
+    height: auto !important;
+    min-height: auto !important;
+    justify-content: flex-start !important;
     padding: 24px 20px !important;
     box-sizing: border-box !important;
+    gap: 16px !important;
+    align-items: stretch !important;
   }
   
   .html2canvas-render .template-metric-value {
@@ -410,12 +445,12 @@
     line-height: 1 !important;
     margin: 0 !important;
     font-family: system-ui, -apple-system, sans-serif !important;
-    flex: 1 !important;
+    flex: none !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    min-height: 40px !important;
-    height: 40px !important;
+    min-height: auto !important;
+    height: auto !important;
     box-sizing: border-box !important;
     padding: 0 !important;
   }
@@ -428,8 +463,8 @@
     text-align: center !important;
     margin: 0 !important;
     line-height: 1.2 !important;
-    min-height: 16px !important;
-    height: 16px !important;
+    min-height: auto !important;
+    height: auto !important;
     box-sizing: border-box !important;
     padding: 0 !important;
   }
@@ -440,6 +475,33 @@
   .template-container {
     background-color: #ffffff !important;
     color: #111827 !important;
+  }
+  
+  /* Forçar line-height normal para todos os elementos no print */
+  .template-container * {
+    line-height: normal !important;
+    vertical-align: baseline !important;
+  }
+  
+  /* Estilos específicos para tabelas no print */
+  .template-table {
+    line-height: normal !important;
+    vertical-align: baseline !important;
+  }
+  
+  .template-table tr {
+    line-height: normal !important;
+    vertical-align: baseline !important;
+    height: auto !important;
+    min-height: auto !important;
+  }
+  
+  .template-table th,
+  .template-table td {
+    line-height: normal !important;
+    vertical-align: middle !important;
+    height: auto !important;
+    min-height: auto !important;
   }
   
   .template-page {
@@ -453,21 +515,23 @@
     box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
     display: flex !important;
     flex-direction: column !important;
-    height: 160px !important;
-    justify-content: space-between !important;
+    height: auto !important;
+    min-height: auto !important;
+    justify-content: flex-start !important;
     padding: 24px 20px !important;
     box-sizing: border-box !important;
+    gap: 16px !important;
   }
   
   .template-metric-header {
     display: flex !important;
     justify-content: space-between !important;
     align-items: center !important;
-    margin-bottom: 16px !important;
+    margin-bottom: 0 !important;
     vertical-align: middle !important;
-    min-height: 32px !important;
-    height: 32px !important;
-    line-height: 32px !important;
+    min-height: auto !important;
+    height: auto !important;
+    line-height: normal !important;
   }
   
   .template-metric-title {
@@ -481,10 +545,10 @@
     display: flex !important;
     align-items: center !important;
     gap: 6px !important;
-    line-height: 32px !important;
+    line-height: normal !important;
     vertical-align: middle !important;
-    min-height: 32px !important;
-    height: 32px !important;
+    min-height: auto !important;
+    height: auto !important;
   }
   
   .template-metric-badge {
@@ -501,9 +565,9 @@
     display: flex !important;
     align-items: center !important;
     gap: 6px !important;
-    line-height: 32px !important;
-    min-height: 32px !important;
-    height: 32px !important;
+    line-height: normal !important;
+    min-height: auto !important;
+    height: auto !important;
     vertical-align: middle !important;
   }
   
@@ -550,12 +614,12 @@
     line-height: 1 !important;
     margin: 0 !important;
     font-family: system-ui, -apple-system, sans-serif !important;
-    flex: 1 !important;
+    flex: none !important;
     display: flex !important;
     align-items: center !important;
     justify-content: center !important;
-    min-height: 40px !important;
-    height: 40px !important;
+    min-height: auto !important;
+    height: auto !important;
     box-sizing: border-box !important;
     padding: 0 !important;
   }
@@ -568,8 +632,8 @@
     text-align: center !important;
     margin: 0 !important;
     line-height: 1.2 !important;
-    min-height: 16px !important;
-    height: 16px !important;
+    min-height: auto !important;
+    height: auto !important;
     box-sizing: border-box !important;
     padding: 0 !important;
   }

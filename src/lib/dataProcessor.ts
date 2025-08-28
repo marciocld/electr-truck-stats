@@ -202,11 +202,11 @@ export class DataProcessor {
         const currentRow = { ...deviceData[i] };
         
         if (i === 0) {
-          // CORREÇÃO: Para o primeiro dia, calcular diferença com valor base zero se não houver histórico
-          // Isso evita que dados históricos contaminem o cálculo diário
-          currentRow.dailyMileage = currentRow.totalMileage;
-          currentRow.dailyConsumption = currentRow.totalConsumption;
-          console.log(`📊 Primeiro dia ${currentRow.date}: usando valores totais como diários (Km=${currentRow.dailyMileage}, Consumo=${currentRow.dailyConsumption}) [HISTÓRICO]`);
+          // CORREÇÃO: Para o primeiro dia, usar zero como base para evitar contaminação histórica
+          // Isso garante que apenas o período solicitado seja considerado
+          currentRow.dailyMileage = 0;
+          currentRow.dailyConsumption = 0;
+          console.log(`📊 Primeiro dia ${currentRow.date}: usando zero como base para evitar contaminação histórica (Km=0, Consumo=0)`);
         } else {
           // Calcular diferença com o dia anterior
           const previousRow = deviceData[i - 1];
@@ -361,6 +361,8 @@ export class DataProcessor {
     const validData = data.filter(d => d.dailyMileage > 0 && d.dailyConsumption > 0);
     
     console.log(`📊 Calculando resumo com ${validData.length} registros válidos de ${data.length} total`);
+    console.log(`📊 Datas válidas para cálculo: [${validData.map(d => d.date).join(', ')}]`);
+    console.log(`📊 Valores diários de distância: [${validData.map(d => d.dailyMileage).join(', ')}]`);
     
     // DISTÂNCIA TOTAL = Soma de "Distância (km)" da tabela
     const totalDistance = validData.reduce((sum, d) => sum + d.dailyMileage, 0);
@@ -417,6 +419,8 @@ export class DataProcessor {
     const endDateStr = formatDateLocal(endDate);
     
     console.log(`🔍 Filtrando período: ${startDateStr} a ${endDateStr}`);
+    console.log(`📊 Dados antes do filtro: ${data.length} registros`);
+    console.log(`📊 Datas antes do filtro: [${data.map(d => d.date).join(', ')}]`);
     
     const filteredData = data.filter(d => {
       // Comparar apenas as strings de data (YYYY-MM-DD)
@@ -424,19 +428,21 @@ export class DataProcessor {
       const isInPeriod = dataDateStr >= startDateStr && dataDateStr <= endDateStr;
       
       if (!isInPeriod) {
-        console.log(`📅 Removendo data fora do período: ${dataDateStr} (${d.machineSerial})`);
+        console.log(`📅 Removendo data fora do período: ${dataDateStr} (${d.machineSerial}) - Km=${d.dailyMileage}, Consumo=${d.dailyConsumption}`);
       }
       
       return isInPeriod;
     });
     
     console.log(`📊 Filtragem de período: ${data.length} registros → ${filteredData.length} no período`);
+    console.log(`📊 Datas após filtro: [${filteredData.map(d => d.date).join(', ')}]`);
     return filteredData;
   }
 
   /**
    * Filtra linhas com valores zero do relatório final
    * Remove registros onde distância diária OU consumo diário são zero
+   * Isso garante que apenas dados válidos do período sejam incluídos
    */
   static filterValidDataForReport(data: ProcessedDayData[]): ProcessedDayData[] {
     const filteredData = data.filter(d => {
@@ -455,6 +461,7 @@ export class DataProcessor {
     });
     
     console.log(`📊 Relatório: ${data.length} registros → ${filteredData.length} registros válidos (${data.length - filteredData.length} removidos)`);
+    console.log(`📊 Datas válidas no relatório: [${filteredData.map(d => d.date).join(', ')}]`);
     
     return filteredData;
   }
