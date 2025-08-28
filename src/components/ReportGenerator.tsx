@@ -3,7 +3,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { FileText, Download, Calendar, Building } from 'lucide-react';
+import { FileText, Download, Calendar, Building, Printer } from 'lucide-react';
+import companyLogo from '@/assets/company-logo.png';
 
 // Mock data for demonstration
 const generateMockData = (period: string) => ({
@@ -73,9 +74,108 @@ const generateMockData = (period: string) => ({
 
 export const ReportGenerator = () => {
   const [period, setPeriod] = useState('Janeiro 2024');
-  const [logoUrl, setLogoUrl] = useState('');
+  const [showPreview, setShowPreview] = useState(false);
   
   const reportData = generateMockData(period);
+
+  if (showPreview) {
+    return (
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <Button 
+            variant="outline" 
+            onClick={() => setShowPreview(false)}
+          >
+            ← Voltar para Configurações
+          </Button>
+          <Button 
+            onClick={() => window.print()}
+            className="flex items-center gap-2"
+          >
+            <Printer className="h-4 w-4" />
+            Imprimir/Salvar PDF
+          </Button>
+        </div>
+        
+        {/* Template Preview */}
+        <div className="bg-white p-12 shadow-lg max-w-4xl mx-auto print:shadow-none print:p-0" style={{ minHeight: '297mm' }}>
+          {/* Header */}
+          <div className="flex justify-between items-start mb-12 pb-6 border-b-2 border-primary">
+            <div>
+              <img 
+                src={companyLogo} 
+                alt="Logo da Empresa" 
+                className="h-16 w-auto"
+              />
+            </div>
+            <div className="text-right">
+              <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                Relatório de Consumo
+              </h1>
+              <p className="text-gray-600">
+                Período: {period}
+              </p>
+            </div>
+          </div>
+
+          {/* Summary Section */}
+          <div className="mb-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Resumo</h2>
+            <div className="grid grid-cols-3 gap-6">
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+                <h3 className="text-sm text-gray-600 mb-2">Consumo Total</h3>
+                <p className="text-3xl font-bold text-primary">{reportData.summary.totalConsumption.toFixed(2)}</p>
+                <p className="text-gray-500 text-sm">kWh</p>
+              </div>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+                <h3 className="text-sm text-gray-600 mb-2">Distância Total</h3>
+                <p className="text-3xl font-bold text-primary">{reportData.summary.totalDistance.toFixed(0)}</p>
+                <p className="text-gray-500 text-sm">km</p>
+              </div>
+              <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+                <h3 className="text-sm text-gray-600 mb-2">Consumo por KM</h3>
+                <p className="text-3xl font-bold text-primary">{reportData.summary.consumptionPerKm.toFixed(3)}</p>
+                <p className="text-gray-500 text-sm">kWh/km</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Detailed Data Section */}
+          <div>
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Dados Detalhados</h2>
+            <div className="border border-gray-200 rounded-lg overflow-hidden">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Série</th>
+                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Data</th>
+                    <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">Dist. Acum.</th>
+                    <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">Cons. Acum.</th>
+                    <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">Distância</th>
+                    <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">Consumo</th>
+                    <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">Cons/KM</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-gray-200">
+                  {reportData.detailedData.map((row, index) => (
+                    <tr key={index} className="hover:bg-gray-50">
+                      <td className="px-4 py-3 text-sm text-gray-900">{row.serie}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900">{row.date}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900 text-right">{row.accumulatedDistance.toFixed(0)}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900 text-right">{row.accumulatedConsumption.toFixed(2)}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900 text-right">{row.distance.toFixed(0)}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900 text-right">{row.consumption.toFixed(2)}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900 text-right">{row.consumptionPerKm.toFixed(3)}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
@@ -83,49 +183,30 @@ export const ReportGenerator = () => {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <FileText className="h-5 w-5 text-primary" />
-            Gerador de Relatório PDF
+            Configurações do Relatório
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="period" className="flex items-center gap-2">
-                <Calendar className="h-4 w-4" />
-                Período do Relatório
-              </Label>
-              <Input
-                id="period"
-                value={period}
-                onChange={(e) => setPeriod(e.target.value)}
-                placeholder="Ex: Janeiro 2024"
-              />
-            </div>
-            
-            <div className="space-y-2">
-              <Label htmlFor="logo" className="flex items-center gap-2">
-                <Building className="h-4 w-4" />
-                URL da Logo da Empresa
-              </Label>
-              <Input
-                id="logo"
-                value={logoUrl}
-                onChange={(e) => setLogoUrl(e.target.value)}
-                placeholder="https://exemplo.com/logo.png"
-              />
-            </div>
+          <div className="space-y-2">
+            <Label htmlFor="period" className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              Período do Relatório
+            </Label>
+            <Input
+              id="period"
+              value={period}
+              onChange={(e) => setPeriod(e.target.value)}
+              placeholder="Ex: Janeiro 2024"
+            />
           </div>
 
-          <div className="pt-4">
+          <div className="pt-4 space-y-2">
             <Button 
               className="w-full" 
-              onClick={() => {
-                // Aqui seria implementada a geração do PDF
-                console.log('Gerando relatório PDF para o período:', period);
-                alert(`Relatório para ${period} será gerado em breve!`);
-              }}
+              onClick={() => setShowPreview(true)}
             >
-              <Download className="h-4 w-4 mr-2" />
-              Gerar Relatório PDF
+              <FileText className="h-4 w-4 mr-2" />
+              Visualizar Template do Relatório
             </Button>
           </div>
         </CardContent>
@@ -172,5 +253,3 @@ export const ReportGenerator = () => {
     </div>
   );
 };
-
-export default ReportGenerator;
