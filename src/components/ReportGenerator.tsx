@@ -499,65 +499,6 @@ export const ReportGenerator = () => {
             }}
             data-page="2"
           >
-            {/* Header da segunda página simplificado */}
-            <div 
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                marginBottom: '32px',
-                paddingBottom: '16px',
-                borderBottom: '2px solid #e5e7eb'
-              }}
-            >
-              <h2 
-                style={{
-                  fontSize: '24px',
-                  fontWeight: '600',
-                  color: '#111827',
-                  margin: '0'
-                }}
-              >
-                Dados Detalhados
-              </h2>
-              <div 
-                style={{
-                  fontSize: '12px',
-                  color: '#6b7280',
-                  textAlign: 'right'
-                }}
-              >
-                <div>Página 2 de 2</div>
-                <div>{reportData.detailedData.length} registros</div>
-              </div>
-            </div>
-            {/* Título da seção de dados */}
-            <div 
-              style={{
-                marginBottom: '32px'
-              }}
-            >
-              <h2 
-                style={{
-                  fontSize: '20px',
-                  fontWeight: '700',
-                  color: '#111827',
-                  marginBottom: '8px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px'
-                }}
-              >
-                Dados Detalhados
-              </h2>
-              <div 
-                style={{
-                  width: '40px',
-                  height: '2px',
-                  backgroundColor: '#111827'
-                }}
-              ></div>
-            </div>
-
             {/* Container da tabela */}
             <div 
               style={{
