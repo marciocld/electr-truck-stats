@@ -95,60 +95,72 @@ export const ReportGenerator = () => {
         
         {/* Template Preview */}
         <div className="bg-white p-12 shadow-lg max-w-4xl mx-auto print:shadow-none print:p-0" style={{ minHeight: '297mm' }}>
-          {/* Header */}
-          <div className="flex justify-between items-start mb-12 pb-6 border-b-2 border-primary">
-            <div>
-              <img 
-                src={companyLogo} 
-                alt="Logo da Empresa" 
-                className="h-16 w-auto"
-              />
+          {/* Primeira Página - Resumo */}
+          <div className="min-h-screen">
+            {/* Header */}
+            <div className="flex justify-between items-start mb-12 pb-6 border-b-2 border-primary">
+              <div>
+                <img 
+                  src={companyLogo} 
+                  alt="Logo da Empresa" 
+                  className="h-16 w-auto"
+                />
+              </div>
+              <div className="text-right">
+                <h1 className="text-3xl font-bold text-gray-900 mb-2">
+                  Relatório de Consumo
+                </h1>
+                <p className="text-gray-600">
+                  Período: {period}
+                </p>
+              </div>
             </div>
-            <div className="text-right">
-              <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                Relatório de Consumo
-              </h1>
-              <p className="text-gray-600">
-                Período: {period}
-              </p>
+
+            {/* Summary Section */}
+            <div className="mb-12">
+              <h2 className="text-2xl font-bold text-gray-900 mb-8 text-center">Resumo do Período</h2>
+              
+              {/* Cards reorganizados em 2 linhas */}
+              <div className="space-y-6">
+                {/* Primeira linha - Distâncias */}
+                <div className="grid grid-cols-2 gap-8">
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+                    <h3 className="text-sm text-gray-600 mb-3">Distância Total</h3>
+                    <p className="text-4xl font-bold text-primary">{reportData.summary.totalDistance.toFixed(0)}</p>
+                    <p className="text-gray-500 text-sm mt-2">km</p>
+                  </div>
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+                    <h3 className="text-sm text-gray-600 mb-3">Distância Média</h3>
+                    <p className="text-4xl font-bold text-primary">{reportData.summary.avgDistance.toFixed(0)}</p>
+                    <p className="text-gray-500 text-sm mt-2">km</p>
+                  </div>
+                </div>
+
+                {/* Segunda linha - Consumos */}
+                <div className="grid grid-cols-3 gap-6">
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+                    <h3 className="text-sm text-gray-600 mb-3">Consumo Total</h3>
+                    <p className="text-3xl font-bold text-primary">{reportData.summary.totalConsumption.toFixed(2)}</p>
+                    <p className="text-gray-500 text-sm mt-2">kWh</p>
+                  </div>
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+                    <h3 className="text-sm text-gray-600 mb-3">Consumo Médio</h3>
+                    <p className="text-3xl font-bold text-primary">{reportData.summary.avgConsumption.toFixed(2)}</p>
+                    <p className="text-gray-500 text-sm mt-2">kWh</p>
+                  </div>
+                  <div className="bg-gray-50 border border-gray-200 rounded-lg p-6 text-center">
+                    <h3 className="text-sm text-gray-600 mb-3">Consumo Médio por KM</h3>
+                    <p className="text-3xl font-bold text-primary">{reportData.summary.avgConsumptionPerKm.toFixed(3)}</p>
+                    <p className="text-gray-500 text-sm mt-2">kWh/km</p>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
 
-          {/* Summary Section */}
-          <div className="mb-12">
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Resumo</h2>
-            <div className="grid grid-cols-5 gap-4">
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
-                <h3 className="text-xs text-gray-600 mb-2">Distância Total</h3>
-                <p className="text-2xl font-bold text-primary">{reportData.summary.totalDistance.toFixed(0)}</p>
-                <p className="text-gray-500 text-xs">km</p>
-              </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
-                <h3 className="text-xs text-gray-600 mb-2">Distância Média</h3>
-                <p className="text-2xl font-bold text-primary">{reportData.summary.avgDistance.toFixed(0)}</p>
-                <p className="text-gray-500 text-xs">km</p>
-              </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
-                <h3 className="text-xs text-gray-600 mb-2">Consumo Total</h3>
-                <p className="text-2xl font-bold text-primary">{reportData.summary.totalConsumption.toFixed(2)}</p>
-                <p className="text-gray-500 text-xs">kWh</p>
-              </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
-                <h3 className="text-xs text-gray-600 mb-2">Consumo Médio</h3>
-                <p className="text-2xl font-bold text-primary">{reportData.summary.avgConsumption.toFixed(2)}</p>
-                <p className="text-gray-500 text-xs">kWh</p>
-              </div>
-              <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 text-center">
-                <h3 className="text-xs text-gray-600 mb-2">Consumo Médio por KM</h3>
-                <p className="text-2xl font-bold text-primary">{reportData.summary.avgConsumptionPerKm.toFixed(3)}</p>
-                <p className="text-gray-500 text-xs">kWh/km</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Detailed Data Section */}
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-6">Dados</h2>
+          {/* Segunda Página - Dados Detalhados */}
+          <div className="print:break-before-page min-h-screen pt-12">
+            <h2 className="text-2xl font-bold text-gray-900 mb-6">Dados Detalhados</h2>
             <div className="border border-gray-200 rounded-lg overflow-hidden">
               <table className="w-full">
                 <thead className="bg-gray-50">
