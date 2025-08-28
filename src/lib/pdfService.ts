@@ -257,8 +257,8 @@ export class PDFService {
         });
       }
 
-      // Aguardar um pouco para garantir que o DOM esteja renderizado
-      await new Promise(resolve => setTimeout(resolve, 100));
+      // Aguardar mais tempo para garantir que o DOM esteja completamente renderizado
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       // Capturar cada página individualmente
       const pages = element.querySelectorAll('[data-page]');
@@ -278,30 +278,48 @@ export class PDFService {
         page.style.height = 'auto';
         page.style.overflow = 'visible';
 
-        // Capturar a página
+        // Obter dimensões reais da página
+        const pageRect = page.getBoundingClientRect();
+        const pageWidth = Math.max(794, pageRect.width);
+        const pageHeight = Math.max(1123, pageRect.height);
+        
+        console.log(`Dimensões da página ${i + 1}: ${pageWidth}x${pageHeight}`);
+
+        // Capturar a página com dimensões dinâmicas
         const canvas = await html2canvas(page, {
           scale: this.options.scale || 2,
           useCORS: true,
           allowTaint: true,
-          backgroundColor: null, // Permitir que o template controle o background
-          logging: true,
-          width: 794, // 210mm em pixels (210 * 3.7795275591)
-          height: 1123, // 297mm em pixels (297 * 3.7795275591)
+          backgroundColor: '#ffffff',
+          logging: false,
+          width: pageWidth,
+          height: pageHeight,
           scrollX: 0,
           scrollY: 0,
-          windowWidth: 794,
-          windowHeight: 1123,
+          windowWidth: pageWidth,
+          windowHeight: pageHeight,
           foreignObjectRendering: false,
           removeContainer: false,
           imageTimeout: 30000,
           ignoreElements: (element) => {
-            // Não ignorar elementos com sombras
             return false;
           },
-          onclone: (clonedDoc) => {
-            console.log(`Elemento clonado da página ${i + 1}:`, clonedDoc);
-            const clonedPage = clonedDoc.body.firstElementChild as HTMLElement;
-            if (clonedPage) {
+
+                      // Configurações para melhor renderização de sombras e bordas
+            onclone: (clonedDoc) => {
+              const clonedPage = clonedDoc.body.firstElementChild as HTMLElement;
+              if (clonedPage) {
+                // Forçar reflow do DOM
+                clonedPage.offsetHeight;
+                
+                // Aguardar um pouco para garantir que os estilos sejam aplicados
+                setTimeout(() => {
+                  // Forçar recálculo de layout
+                  clonedPage.style.display = 'none';
+                  clonedPage.offsetHeight;
+                  clonedPage.style.display = 'block';
+                }, 10);
+              // Configurações básicas da página
               clonedPage.style.transform = 'none';
               clonedPage.style.position = 'relative';
               clonedPage.style.width = '100%';
@@ -310,155 +328,138 @@ export class PDFService {
               clonedPage.style.visibility = 'visible';
               clonedPage.style.opacity = '1';
               clonedPage.style.overflow = 'visible';
+              clonedPage.style.backgroundColor = '#ffffff';
               
-              // Garantir que todos os estilos dos cards simplificados sejam preservados
-              const cards = clonedPage.querySelectorAll('.bg-white.border.border-border.rounded-lg');
-              cards.forEach((card) => {
+              // Adicionar classe especial para html2canvas
+              clonedPage.classList.add('html2canvas-render');
+              
+              // Garantir que todos os elementos tenham estilos inline preservados
+              const allElements = clonedPage.querySelectorAll('*');
+              allElements.forEach((element) => {
+                if (element instanceof HTMLElement) {
+                  // Preservar estilos inline existentes
+                  const computedStyle = window.getComputedStyle(element);
+                  const importantStyles = [
+                    'color', 'background-color', 'background', 'border', 'border-radius',
+                    'padding', 'margin', 'font-size', 'font-weight', 'text-align',
+                    'display', 'position', 'width', 'height', 'box-shadow'
+                  ];
+                  
+                  importantStyles.forEach(style => {
+                    const value = computedStyle.getPropertyValue(style);
+                    if (value && value !== 'initial' && value !== 'normal') {
+                      element.style.setProperty(style, value, 'important');
+                    }
+                  });
+                }
+              });
+              
+              // Preservar especificamente os cards de métricas com sombras e bordas
+              const metricCards = clonedPage.querySelectorAll('.template-metric-card');
+              metricCards.forEach((card) => {
                 if (card instanceof HTMLElement) {
-                  // Forçar estilos dos cards com degradê
-                  card.style.background = 'linear-gradient(135deg, #ffffff 0%, #f8fafc 100%)';
-                  card.style.border = '1px solid #e2e8f0';
-                  card.style.borderRadius = '12px';
-                  card.style.padding = '32px';
-                  card.style.textAlign = 'center';
-                  card.style.display = 'block';
-                  card.style.visibility = 'visible';
-                  card.style.opacity = '1';
-                  card.style.position = 'relative';
-                  card.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)';
+                  // Usar CSS classes ao invés de inline styles para melhor estabilidade
+                  card.classList.add('html2canvas-render');
                   
-                  // Garantir que os títulos dos cards sejam visíveis
-                  const titles = card.querySelectorAll('h3');
-                  titles.forEach((title) => {
-                    if (title instanceof HTMLElement) {
-                      title.style.color = '#6b7280';
-                      title.style.fontSize = '14px';
-                      title.style.marginBottom = '12px';
-                      title.style.fontWeight = '500';
-                      title.style.textTransform = 'uppercase';
-                      title.style.letterSpacing = '0.5px';
-                      title.style.margin = '0 0 12px 0';
-                    }
-                  });
-                  
-                  // Valores principais dos cards
-                  const values = card.querySelectorAll('p');
-                  values.forEach((value, index) => {
-                    if (value instanceof HTMLElement) {
-                      if (index === 0) {
-                        // Valor principal - cor verde
-                        value.style.color = '#22c55e';
-                        value.style.fontSize = '36px';
-                        value.style.fontWeight = '700';
-                        value.style.margin = '0 0 8px 0';
-                        value.style.lineHeight = '1';
-                      } else {
-                        // Unidade
-                        value.style.color = '#6b7280';
-                        value.style.fontSize = '16px';
-                        value.style.margin = '0';
-                        value.style.fontWeight = '500';
-                      }
-                    }
-                  });
+                  // Apenas os estilos essenciais inline
+                  card.style.setProperty('background-color', '#ffffff', 'important');
+                  card.style.setProperty('border', '1px solid #e5e7eb', 'important');
+                  card.style.setProperty('border-radius', '8px', 'important');
+                  card.style.setProperty('box-shadow', '0 1px 3px 0 rgba(0, 0, 0, 0.1)', 'important');
+                  card.style.setProperty('display', 'flex', 'important');
+                  card.style.setProperty('flex-direction', 'column', 'important');
+                  card.style.setProperty('height', '160px', 'important');
+                  card.style.setProperty('justify-content', 'space-between', 'important');
+                  card.style.setProperty('padding', '24px 20px', 'important');
+                  card.style.setProperty('box-sizing', 'border-box', 'important');
                 }
               });
-
-              // Preservar seções com background cinza
-              const insightSections = clonedPage.querySelectorAll('div[style*="background-color: rgb(248, 250, 252)"]');
-              insightSections.forEach((section) => {
-                if (section instanceof HTMLElement) {
-                  section.style.backgroundColor = '#f8fafc';
-                  section.style.border = '2px solid #e2e8f0';
-                  section.style.borderRadius = '12px';
-                  section.style.padding = '24px';
-                }
-              });
-             
-              // Garantir que o header seja preservado
-              const header = clonedPage.querySelector('.flex.justify-between.items-start');
-              if (header instanceof HTMLElement) {
-                header.style.borderBottom = '2px solid #3b82f6';
-                header.style.paddingBottom = '24px';
-                header.style.marginBottom = '48px';
-              }
               
-              // Garantir que a tabela redesenhada seja preservada
-              const table = clonedPage.querySelector('table');
+              // Preservar tabela usando classes CSS
+              const table = clonedPage.querySelector('.template-table');
               if (table instanceof HTMLElement) {
                 table.style.width = '100%';
                 table.style.borderCollapse = 'collapse';
+                table.style.fontSize = '13px';
               }
               
-              // Preservar cabeçalho da tabela aprimorado
-              const tableHeaders = clonedPage.querySelectorAll('th');
+              // Preservar cabeçalho da tabela
+              const tableHeaders = clonedPage.querySelectorAll('.template-table th');
               tableHeaders.forEach((th) => {
                 if (th instanceof HTMLElement) {
-                  th.style.background = 'linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%)';
-                  th.style.padding = '14px 12px';
+                  th.style.backgroundColor = '#f9fafb';
+                  th.style.borderBottom = '2px solid #111827';
+                  th.style.padding = '16px 12px';
                   th.style.textAlign = 'center';
-                  th.style.fontSize = '12px';
+                  th.style.fontSize = '11px';
                   th.style.fontWeight = '700';
-                  th.style.color = '#1e293b';
-                  th.style.borderBottom = '2px solid #cbd5e1';
+                  th.style.color = '#111827';
                   th.style.textTransform = 'uppercase';
-                  th.style.letterSpacing = '0.5px';
+                  th.style.letterSpacing = '1px';
                 }
               });
               
-              // Preservar células da tabela simplificadas
-              const tableCells = clonedPage.querySelectorAll('td');
-              tableCells.forEach((td, index) => {
+              // Preservar células da tabela
+              const tableCells = clonedPage.querySelectorAll('.template-table td');
+              tableCells.forEach((td) => {
                 if (td instanceof HTMLElement) {
                   const row = td.parentElement;
                   const rowIndex = Array.from(row?.parentElement?.children || []).indexOf(row!);
-                  
-                  td.style.padding = '10px 8px';
-                  td.style.textAlign = 'center';
-                  td.style.fontSize = '14px';
-                  td.style.borderBottom = '1px solid #e2e8f0';
-                  
-                  // Aplicar cores baseadas na posição da coluna
                   const cellIndex = Array.from(row?.children || []).indexOf(td);
                   
+                  td.style.padding = '14px 12px';
+                  td.style.textAlign = 'center';
+                  td.style.fontSize = '13px';
+                  td.style.borderBottom = rowIndex === (row?.parentElement?.children.length || 0) - 1 ? 'none' : '1px solid #e5e7eb';
+                  td.style.backgroundColor = rowIndex % 2 === 0 ? '#ffffff' : '#f9fafb';
+                  
+                  // Aplicar cores específicas baseadas na posição
                   if (cellIndex === 0) {
-                    // Data - destaque
                     td.style.color = '#111827';
                     td.style.fontWeight = '600';
                   } else if (cellIndex === 1 || cellIndex === 2) {
-                    // Dados acumulados - cor neutra
-                    td.style.color = '#4b5563';
+                    td.style.color = '#6b7280';
                     td.style.fontWeight = '500';
                   } else if (cellIndex === 3 || cellIndex === 4) {
-                    // Dados do dia - destaque
                     td.style.color = '#111827';
                     td.style.fontWeight = '600';
                   } else if (cellIndex === 5) {
-                    // Eficiência - azul
-                    td.style.color = '#3b82f6';
-                    td.style.fontWeight = '600';
+                    td.style.color = '#111827';
+                    td.style.fontWeight = '700';
                   }
                 }
               });
-
-              // Preservar gradientes e elementos decorativos
-              const gradientElements = clonedPage.querySelectorAll('[style*="linear-gradient"]');
-              gradientElements.forEach((element) => {
+              
+              // Preservar logo
+              const logo = clonedPage.querySelector('.template-logo');
+              if (logo instanceof HTMLImageElement) {
+                logo.style.height = '36px';
+                logo.style.width = 'auto';
+                logo.style.display = 'block';
+              }
+              
+              // Preservar títulos principais
+              const mainTitles = clonedPage.querySelectorAll('.template-main-title h1');
+              mainTitles.forEach((title) => {
+                if (title instanceof HTMLElement) {
+                  title.style.fontSize = '28px';
+                  title.style.fontWeight = '700';
+                  title.style.color = '#111827';
+                  title.style.letterSpacing = '-0.5px';
+                  title.style.margin = '0';
+                  title.style.lineHeight = '1.1';
+                  title.style.textAlign = 'center';
+                }
+              });
+              
+              // Usar classes CSS para elementos dos cards ao invés de inline styles
+              const metricElements = clonedPage.querySelectorAll(
+                '.template-metric-value, .template-metric-unit, .template-metric-title, .template-metric-badge, .template-metric-header, .template-metric-icon, .template-badge-icon'
+              );
+              
+              metricElements.forEach((element) => {
                 if (element instanceof HTMLElement) {
-                  // Manter os gradientes já aplicados
-                  const currentStyle = element.getAttribute('style') || '';
-                  if (currentStyle.includes('linear-gradient')) {
-                    element.style.cssText = currentStyle;
-                  }
-                }
-              });
-
-              // Remover sombras de containers de tabela
-              const tableContainers = clonedPage.querySelectorAll('.border.border-border.rounded-xl.overflow-hidden');
-              tableContainers.forEach((container) => {
-                if (container instanceof HTMLElement) {
-                  container.style.boxShadow = 'none';
-                  container.style.borderRadius = '8px';
+                  element.classList.add('html2canvas-render');
                 }
               });
             }
@@ -486,12 +487,34 @@ export class PDFService {
           this.doc.addPage();
         }
 
-        // Usar dimensões exatas do A4 - cobrir toda a página
-        const imgWidth = 210; // A4 width in mm
-        const imgHeight = 297; // A4 height in mm
+        // Calcular dimensões proporcionais para o PDF
+        const pdfWidth = 210; // A4 width in mm
+        const pdfHeight = 297; // A4 height in mm
+        
+        // Calcular proporção da imagem
+        const imgRatio = canvas.width / canvas.height;
+        const pdfRatio = pdfWidth / pdfHeight;
+        
+        let finalWidth, finalHeight;
+        
+        if (imgRatio > pdfRatio) {
+          // Imagem é mais larga - ajustar pela largura
+          finalWidth = pdfWidth;
+          finalHeight = pdfWidth / imgRatio;
+        } else {
+          // Imagem é mais alta - ajustar pela altura
+          finalHeight = pdfHeight;
+          finalWidth = pdfHeight * imgRatio;
+        }
+        
+        // Centralizar a imagem na página
+        const x = (pdfWidth - finalWidth) / 2;
+        const y = (pdfHeight - finalHeight) / 2;
 
-        // Adicionar imagem cobrindo toda a página - template controla margens
-        this.doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+        console.log(`Adicionando imagem ${i + 1}: ${finalWidth}x${finalHeight}mm na posição (${x}, ${y})`);
+        
+        // Adicionar imagem com dimensões proporcionais
+        this.doc.addImage(imgData, 'PNG', x, y, finalWidth, finalHeight);
 
         // Restaurar estilo original
         page.style.cssText = originalStyle;

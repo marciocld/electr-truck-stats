@@ -1,0 +1,584 @@
+/* Estilos específicos para o template de relatório */
+.template-container {
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  background-color: #ffffff;
+  color: #111827;
+}
+
+.template-page {
+  background-color: #ffffff;
+  min-height: 297mm;
+  padding: 15mm;
+  margin: 0;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+  width: 210mm;
+  box-sizing: border-box;
+}
+
+.template-header {
+  position: relative;
+  margin-bottom: 80px;
+}
+
+.template-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 40px;
+}
+
+.template-logo {
+  height: 36px;
+  width: auto;
+  display: block;
+}
+
+.template-period {
+  text-align: right;
+}
+
+.template-period-title {
+  font-size: 14px;
+  color: #374151;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.template-period-date {
+  font-size: 12px;
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+.template-main-title {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.template-main-title h1 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+  letter-spacing: -0.5px;
+  margin: 0;
+  line-height: 1.1;
+}
+
+.template-divider {
+  width: 100%;
+  height: 2px;
+  background-color: #e5e7eb;
+}
+
+.template-metrics-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 24px 32px;
+  margin-bottom: 60px;
+}
+
+.template-metric-card {
+  padding: 24px 20px;
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  overflow: hidden;
+  box-sizing: border-box;
+  height: 160px;
+  justify-content: space-between;
+}
+
+.template-metric-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+  vertical-align: middle;
+  min-height: 32px;
+  box-sizing: border-box;
+  width: 100%;
+}
+
+.template-metric-title {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  line-height: 1;
+  vertical-align: middle;
+  min-height: 32px;
+  box-sizing: border-box;
+}
+
+.template-metric-icon {
+  width: 14px;
+  height: 14px;
+  color: #6b7280;
+  vertical-align: middle;
+  align-self: center;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.template-metric-badge {
+  background-color: #f3f4f6;
+  color: #374151;
+  padding: 10px 14px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: 8px;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  line-height: 1;
+  min-height: 32px;
+  vertical-align: middle;
+  box-sizing: border-box;
+  flex-shrink: 0;
+}
+
+.template-badge-icon {
+  width: 14px;
+  height: 14px;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
+  align-self: center;
+}
+
+.template-metric-badge.primary {
+  background-color: #dbeafe;
+  color: #1e40af;
+}
+
+.template-metric-badge.success {
+  background-color: #d1fae5;
+  color: #065f46;
+}
+
+.template-metric-badge.warning {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.template-metric-value {
+  font-size: 32px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1;
+  margin: 0;
+  font-family: system-ui, -apple-system, sans-serif;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  box-sizing: border-box;
+}
+
+.template-metric-unit {
+  font-size: 12px;
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: lowercase;
+  text-align: center;
+  margin: 0;
+  line-height: 1.2;
+  min-height: 16px;
+  box-sizing: border-box;
+}
+
+.template-metric-dual {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+}
+
+.template-metric-dual-item {
+  text-align: center;
+  flex: 1;
+}
+
+.template-metric-dual-value {
+  font-size: 18px;
+  font-weight: 700;
+  color: #111827;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+.template-metric-dual-label {
+  font-size: 10px;
+  color: #6b7280;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.template-divider-vertical {
+  width: 1px;
+  height: 32px;
+  background-color: #e5e7eb;
+  margin: 0 16px;
+}
+
+.template-table-container {
+  background-color: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0;
+  overflow: hidden;
+}
+
+.template-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0;
+  font-size: 13px;
+}
+
+.template-table th {
+  background-color: #f9fafb;
+  border-bottom: 2px solid #111827;
+  padding: 16px 12px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  color: #111827;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.template-table td {
+  padding: 14px 12px;
+  text-align: center;
+  font-size: 13px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.template-table tr:nth-child(even) {
+  background-color: #f9fafb;
+}
+
+.template-table tr:last-child td {
+  border-bottom: none;
+}
+
+.template-footer {
+  margin-top: 48px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+  text-align: center;
+}
+
+.template-footer-text {
+  font-size: 11px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+/* Estilos específicos para PDF e html2canvas */
+@media print, screen {
+  /* Classe especial para html2canvas */
+  .html2canvas-render {
+    /* Forçar alinhamento vertical usando line-height */
+    line-height: 1 !important;
+  }
+  
+  .html2canvas-render .template-metric-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 16px !important;
+    vertical-align: middle !important;
+    min-height: 32px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+    line-height: 32px !important;
+    height: 32px !important;
+  }
+  
+  .html2canvas-render .template-metric-title {
+    font-size: 12px !important;
+    color: #6b7280 !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    margin: 0 !important;
+    flex: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 6px !important;
+    line-height: 32px !important;
+    vertical-align: middle !important;
+    min-height: 32px !important;
+    height: 32px !important;
+    box-sizing: border-box !important;
+  }
+  
+  .html2canvas-render .template-metric-badge {
+    background-color: #f3f4f6 !important;
+    color: #374151 !important;
+    padding: 10px 14px !important;
+    border-radius: 12px !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    margin-left: 8px !important;
+    white-space: nowrap !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    line-height: 32px !important;
+    min-height: 32px !important;
+    height: 32px !important;
+    vertical-align: middle !important;
+    box-sizing: border-box !important;
+    flex-shrink: 0 !important;
+  }
+  
+  .html2canvas-render .template-metric-badge.primary {
+    background-color: #dbeafe !important;
+    color: #1e40af !important;
+  }
+  
+  .html2canvas-render .template-metric-badge.success {
+    background-color: #d1fae5 !important;
+    color: #065f46 !important;
+  }
+  
+  .html2canvas-render .template-metric-badge.warning {
+    background-color: #fef3c7 !important;
+    color: #92400e !important;
+  }
+  
+  .html2canvas-render .template-metric-icon {
+    width: 14px !important;
+    height: 14px !important;
+    color: #6b7280 !important;
+    vertical-align: middle !important;
+    align-self: center !important;
+    flex-shrink: 0 !important;
+    display: inline-block !important;
+    line-height: 32px !important;
+    margin: 0 !important;
+  }
+  
+  .html2canvas-render .template-badge-icon {
+    width: 14px !important;
+    height: 14px !important;
+    flex-shrink: 0 !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+    align-self: center !important;
+    line-height: 32px !important;
+    margin: 0 !important;
+  }
+  
+  .html2canvas-render .template-metric-card {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 160px !important;
+    justify-content: space-between !important;
+    padding: 24px 20px !important;
+    box-sizing: border-box !important;
+  }
+  
+  .html2canvas-render .template-metric-value {
+    font-size: 32px !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    font-family: system-ui, -apple-system, sans-serif !important;
+    flex: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 40px !important;
+    height: 40px !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
+  }
+  
+  .html2canvas-render .template-metric-unit {
+    font-size: 12px !important;
+    color: #6b7280 !important;
+    font-weight: 500 !important;
+    text-transform: lowercase !important;
+    text-align: center !important;
+    margin: 0 !important;
+    line-height: 1.2 !important;
+    min-height: 16px !important;
+    height: 16px !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
+  }
+}
+
+/* Estilos específicos para PDF */
+@media print {
+  .template-container {
+    background-color: #ffffff !important;
+    color: #111827 !important;
+  }
+  
+  .template-page {
+    background-color: #ffffff !important;
+    box-shadow: none !important;
+    border-radius: 0 !important;
+  }
+  
+  .template-metric-card {
+    background-color: #ffffff !important;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1) !important;
+    display: flex !important;
+    flex-direction: column !important;
+    height: 160px !important;
+    justify-content: space-between !important;
+    padding: 24px 20px !important;
+    box-sizing: border-box !important;
+  }
+  
+  .template-metric-header {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    margin-bottom: 16px !important;
+    vertical-align: middle !important;
+    min-height: 32px !important;
+    height: 32px !important;
+    line-height: 32px !important;
+  }
+  
+  .template-metric-title {
+    font-size: 12px !important;
+    color: #6b7280 !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    margin: 0 !important;
+    flex: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    line-height: 32px !important;
+    vertical-align: middle !important;
+    min-height: 32px !important;
+    height: 32px !important;
+  }
+  
+  .template-metric-badge {
+    background-color: #f3f4f6 !important;
+    color: #374151 !important;
+    padding: 10px 14px !important;
+    border-radius: 12px !important;
+    font-size: 10px !important;
+    font-weight: 600 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.5px !important;
+    margin-left: 8px !important;
+    white-space: nowrap !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+    line-height: 32px !important;
+    min-height: 32px !important;
+    height: 32px !important;
+    vertical-align: middle !important;
+  }
+  
+  .template-metric-badge.primary {
+    background-color: #dbeafe !important;
+    color: #1e40af !important;
+  }
+  
+  .template-metric-badge.success {
+    background-color: #d1fae5 !important;
+    color: #065f46 !important;
+  }
+  
+  .template-metric-badge.warning {
+    background-color: #fef3c7 !important;
+    color: #92400e !important;
+  }
+  
+  .template-metric-icon {
+    width: 14px !important;
+    height: 14px !important;
+    color: #6b7280 !important;
+    vertical-align: middle !important;
+    align-self: center !important;
+    flex-shrink: 0 !important;
+    display: inline-block !important;
+    margin: 0 !important;
+  }
+  
+  .template-badge-icon {
+    width: 14px !important;
+    height: 14px !important;
+    flex-shrink: 0 !important;
+    display: inline-block !important;
+    vertical-align: middle !important;
+    align-self: center !important;
+    margin: 0 !important;
+  }
+  
+  .template-metric-value {
+    font-size: 32px !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    line-height: 1 !important;
+    margin: 0 !important;
+    font-family: system-ui, -apple-system, sans-serif !important;
+    flex: 1 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    min-height: 40px !important;
+    height: 40px !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
+  }
+  
+  .template-metric-unit {
+    font-size: 12px !important;
+    color: #6b7280 !important;
+    font-weight: 500 !important;
+    text-transform: lowercase !important;
+    text-align: center !important;
+    margin: 0 !important;
+    line-height: 1.2 !important;
+    min-height: 16px !important;
+    height: 16px !important;
+    box-sizing: border-box !important;
+    padding: 0 !important;
+  }
+  
+  .template-table th {
+    background-color: #f9fafb !important;
+  }
+  
+  .template-table tr:nth-child(even) {
+    background-color: #f9fafb !important;
+  }
+}

@@ -3,85 +3,77 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { FileText, Download, Calendar, Building } from 'lucide-react';
+import { Skeleton } from '@/components/ui/skeleton';
+import { FileText, Download, Calendar, Building, AlertCircle, RefreshCw, Truck, Battery, Zap, TrendingUp, MapPin, Gauge } from 'lucide-react';
 import companyLogo from '@/assets/company-logo.png';
-import { pdfService, PDFOptions } from '@/lib/pdfService';
-
-// Mock data for demonstration
-const generateMockData = (period: string) => ({
-  period,
-  summary: {
-    totalConsumption: 2847.5,
-    totalDistance: 15420,
-    avgConsumptionPerKm: 0.185,
-    avgConsumption: 284.75,
-    avgDistance: 1542,
-  },
-  detailedData: [
-    {
-      date: '2024-01-01',
-      accumulatedDistance: 1250,
-      accumulatedConsumption: 231.2,
-      distance: 1250,
-      consumption: 231.2,
-      consumptionPerKm: 0.185,
-    },
-    {
-      date: '2024-01-02',
-      accumulatedDistance: 2480,
-      accumulatedConsumption: 459.1,
-      distance: 1230,
-      consumption: 227.9,
-      consumptionPerKm: 0.185,
-    },
-    {
-      date: '2024-01-03',
-      accumulatedDistance: 3450,
-      accumulatedConsumption: 638.3,
-      distance: 970,
-      consumption: 179.2,
-      consumptionPerKm: 0.185,
-    },
-    {
-      date: '2024-01-04',
-      accumulatedDistance: 4620,
-      accumulatedConsumption: 854.7,
-      distance: 1170,
-      consumption: 216.4,
-      consumptionPerKm: 0.185,
-    },
-    {
-      date: '2024-01-05',
-      accumulatedDistance: 6070,
-      accumulatedConsumption: 1123.0,
-      distance: 1450,
-      consumption: 268.3,
-      consumptionPerKm: 0.185,
-    },
-    {
-      date: '2024-01-06',
-      accumulatedDistance: 7510,
-      accumulatedConsumption: 1389.4,
-      distance: 1440,
-      consumption: 266.4,
-      consumptionPerKm: 0.185,
-    },
-  ],
-});
-
-// Função para formatar data no padrão brasileiro
-const formatDateBR = (dateString: string) => {
-  const date = new Date(dateString);
-  return date.toLocaleDateString('pt-BR');
-};
+import { pdfService, PDFOptions, ReportData } from '@/lib/pdfService';
+import { useElectricTruckData } from '@/hooks/useElectricTruckData';
+import { useDeviceSelection } from '@/hooks/useDeviceSelection';
+import { DeviceSelector } from '@/components/DeviceSelector';
+import { formatDistance, formatConsumption, formatEfficiency, formatDateBR, formatInteger, formatDecimal1, formatDecimal2, createBrazilianDate } from '@/lib/formatters';
+import './ReportGenerator.css';
 
 export const ReportGenerator = () => {
-  const [period, setPeriod] = useState('Janeiro 2024');
-  const [showPreview, setShowPreview] = useState(true);
+  const [startDate, setStartDate] = useState('2024-01-01');
+  const [endDate, setEndDate] = useState('2024-01-31');
+  const [showPreview, setShowPreview] = useState(false);
   const [isGeneratingPDF, setIsGeneratingPDF] = useState(false);
   const templateRef = useRef<HTMLDivElement>(null);
   
-  const reportData = generateMockData(period);
+  // Hook para gerenciar seleção de dispositivos com persistência
+  const { selectedDevices, updateSelection, hasSelection } = useDeviceSelection();
+  
+  // Hook para dados da API
+  const { 
+    data, 
+    summary, 
+    isLoading, 
+    error, 
+    lastUpdated, 
+    progress,
+    loadData 
+  } = useElectricTruckData({
+    startDate: createBrazilianDate(startDate),
+    endDate: createBrazilianDate(endDate),
+    deviceIds: selectedDevices,
+    autoLoad: false
+  });
+
+  // Converter dados para formato do relatório
+  const reportData: ReportData = {
+    period: `${formatDateBR(startDate)} - ${formatDateBR(endDate)}`,
+    summary: {
+      totalConsumption: summary.totalConsumption,
+      totalDistance: summary.totalDistance,
+      avgConsumptionPerKm: summary.avgConsumptionPerKm,
+      avgConsumption: summary.avgConsumption,
+      avgDistance: summary.avgDistance,
+    },
+    detailedData: data.map(d => ({
+      date: d.date,
+      accumulatedDistance: d.totalMileage,
+      accumulatedConsumption: d.totalConsumption,
+      distance: d.dailyMileage,
+      consumption: d.dailyConsumption,
+      consumptionPerKm: d.consumptionPerKm
+    }))
+  };
+
+  // Função para carregar dados com as datas especificadas
+  const handleLoadData = async () => {
+    if (!hasSelection) {
+      alert('Por favor, selecione pelo menos um dispositivo para gerar o relatório.');
+      return;
+    }
+    
+    if (createBrazilianDate(startDate) >= createBrazilianDate(endDate)) {
+      alert('A data final deve ser posterior à data inicial.');
+      return;
+    }
+    
+    await loadData();
+    setShowPreview(true);
+  };
 
   // Função para gerar PDF usando o serviço personalizado
   const handleGeneratePDF = async (options?: PDFOptions) => {
@@ -99,7 +91,7 @@ export const ReportGenerator = () => {
       console.log('Conteúdo do template:', templateRef.current.innerHTML.substring(0, 200) + '...');
       
       const pdfOptions: PDFOptions = {
-        filename: `relatorio-consumo-${period.toLowerCase().replace(' ', '-')}.pdf`,
+        filename: `relatorio-consumo-${startDate}-${endDate}.pdf`,
         orientation: 'portrait',
         format: 'a4',
         scale: 2,
@@ -137,343 +129,135 @@ export const ReportGenerator = () => {
         <div 
           ref={templateRef}
           data-template-ref="true"
-          className="space-y-8 max-w-4xl mx-auto" 
+          className="template-container html2canvas-render space-y-8 max-w-4xl mx-auto" 
           style={{ 
             display: 'block',
             visibility: 'visible',
             opacity: 1,
             position: 'relative',
-            backgroundColor: '#ffffff', // Background branco para o PDF
             padding: '0',
-            width: '210mm', // Largura exata do A4
+            width: '210mm',
             height: 'auto',
             maxWidth: '210mm'
           }}
         >
           {/* Primeira Página - Resumo */}
           <div 
-            className="bg-white p-12 shadow-lg print:shadow-none print:p-0 print:m-0" 
-            style={{ 
-              minHeight: '297mm',
-              display: 'block',
-              visibility: 'visible',
-              opacity: 1,
-              position: 'relative',
-              backgroundColor: '#ffffff',
-              padding: '15mm', // Margens reduzidas para dar mais espaço à tabela
-              margin: '0',
-              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-              borderRadius: '8px',
-              width: '210mm', // Largura exata do A4
-              boxSizing: 'border-box'
-            }}
+            className="template-page" 
             data-page="1"
           >
             {/* Header Minimalista */}
-            <div 
-              className="relative mb-20"
-              style={{
-                position: 'relative',
-                marginBottom: '80px'
-              }}
-            >
+            <div className="template-header">
               {/* Logo e período em linha simples */}
-              <div 
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-between',
-                  alignItems: 'center',
-                  marginBottom: '40px'
-                }}
-              >
+              <div className="template-header-content">
                 <img 
                   src={companyLogo} 
                   alt="Logo da Empresa" 
-                  style={{
-                    height: '36px',
-                    width: 'auto',
-                    display: 'block'
-                  }}
+                  className="template-logo"
                 />
                 
-                <div 
-                  style={{
-                    textAlign: 'right'
-                  }}
-                >
-                  <div 
-                    style={{
-                      fontSize: '14px',
-                      color: '#374151',
-                      fontWeight: '600',
-                      marginBottom: '2px'
-                    }}
-                  >
-                    {period}
+                <div className="template-period">
+                  <div className="template-period-title">
+                    {reportData.period}
                   </div>
-                  <div 
-                    style={{
-                      fontSize: '12px',
-                      color: '#9ca3af',
-                      fontWeight: '400'
-                    }}
-                  >
+                  <div className="template-period-date">
                     {new Date().toLocaleDateString('pt-BR')}
                   </div>
                 </div>
               </div>
 
               {/* Título principal centralizado */}
-              <div 
-                style={{
-                  textAlign: 'center',
-                  marginBottom: '40px'
-                }}
-              >
-                <h1 
-                  style={{
-                    fontSize: '28px',
-                    fontWeight: '700',
-                    color: '#111827',
-                    letterSpacing: '-0.5px',
-                    margin: '0',
-                    lineHeight: '1.1'
-                  }}
-                >
-                  Relatório de Consumo Energético
+              <div className="template-main-title">
+                <h1>
+                  Relatório de consumo
                 </h1>
               </div>
 
               {/* Linha divisória sutil */}
-              <div 
-                style={{
-                  width: '100%',
-                  height: '1px',
-                  backgroundColor: '#e5e7eb'
-                }}
-              ></div>
+              <div className="template-divider"></div>
             </div>
 
             {/* Seção de Métricas */}
             <div className="mb-20">
-              {/* Grid 2x3 mais equilibrado */}
-              <div className="grid grid-cols-2 gap-x-12 gap-y-12">
+              {/* Grid 2x2 mais equilibrado */}
+              <div className="template-metrics-grid">
                 {/* Distância Total */}
-                <div 
-                  style={{
-                    padding: '40px 32px',
-                    backgroundColor: '#ffffff',
-                    borderLeft: '4px solid #111827',
-                    boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-                    display: 'block'
-                  }}
-                >
-                  <div 
-                    style={{
-                      fontSize: '13px',
-                      color: '#6b7280',
-                      fontWeight: '600',
-                      textTransform: 'uppercase',
-                      letterSpacing: '1px',
-                      marginBottom: '12px'
-                    }}
-                  >
-                    Distância Total
+                <div className="template-metric-card">
+                  <div className="template-metric-header">
+                    <div className="template-metric-title">
+                      <Truck className="template-metric-icon" />
+                      Distância Total
+                    </div>
+                    <div className="template-metric-badge primary">
+                      <MapPin className="template-badge-icon" />
+                      KM
+                    </div>
                   </div>
-                  <div 
-                    style={{
-                      fontSize: '48px',
-                      fontWeight: '300',
-                      color: '#111827',
-                      lineHeight: '1',
-                      marginBottom: '8px',
-                      fontFamily: 'system-ui, -apple-system, sans-serif'
-                    }}
-                  >
-                    {reportData.summary.totalDistance.toLocaleString('pt-BR')}
+                  <div className="template-metric-value">
+                    {formatInteger(reportData.summary.totalDistance)}
                   </div>
-                  <div 
-                    style={{
-                      fontSize: '14px',
-                      color: '#6b7280',
-                      fontWeight: '500'
-                    }}
-                  >
-                    quilômetros
+                  <div className="template-metric-unit">
+                    quilômetros percorridos
                   </div>
                 </div>
 
                 {/* Consumo Total */}
-                <div 
-                  style={{
-                    padding: '40px 32px',
-                    backgroundColor: '#ffffff',
-                    borderLeft: '4px solid #111827',
-                    boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-                    display: 'block'
-                  }}
-                >
-                  <div 
-                    style={{
-                      fontSize: '13px',
-                      color: '#6b7280',
-                      fontWeight: '600',
-                      textTransform: 'uppercase',
-                      letterSpacing: '1px',
-                      marginBottom: '12px'
-                    }}
-                  >
-                    Consumo Total
+                <div className="template-metric-card">
+                  <div className="template-metric-header">
+                    <div className="template-metric-title">
+                      <Battery className="template-metric-icon" />
+                      Consumo Total
+                    </div>
+                    <div className="template-metric-badge success">
+                      <Zap className="template-badge-icon" />
+                      kWh
+                    </div>
                   </div>
-                  <div 
-                    style={{
-                      fontSize: '48px',
-                      fontWeight: '300',
-                      color: '#111827',
-                      lineHeight: '1',
-                      marginBottom: '8px',
-                      fontFamily: 'system-ui, -apple-system, sans-serif'
-                    }}
-                  >
-                    {reportData.summary.totalConsumption.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                  <div className="template-metric-value">
+                    {formatDecimal1(reportData.summary.totalConsumption)}
                   </div>
-                  <div 
-                    style={{
-                      fontSize: '14px',
-                      color: '#6b7280',
-                      fontWeight: '500'
-                    }}
-                  >
-                    kilowatt-hora
+                  <div className="template-metric-unit">
+                    quilowatt-hora consumidos
                   </div>
                 </div>
 
-                {/* Eficiência */}
-                <div 
-                  style={{
-                    padding: '40px 32px',
-                    backgroundColor: '#ffffff',
-                    borderLeft: '4px solid #111827',
-                    boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-                    display: 'block'
-                  }}
-                >
-                  <div 
-                    style={{
-                      fontSize: '13px',
-                      color: '#6b7280',
-                      fontWeight: '600',
-                      textTransform: 'uppercase',
-                      letterSpacing: '1px',
-                      marginBottom: '12px'
-                    }}
-                  >
-                    Eficiência Energética
+                {/* Distância Média */}
+                <div className="template-metric-card">
+                  <div className="template-metric-header">
+                    <div className="template-metric-title">
+                      <TrendingUp className="template-metric-icon" />
+                      Distância Média
+                    </div>
+                    <div className="template-metric-badge primary">
+                      <Gauge className="template-badge-icon" />
+                      Avg
+                    </div>
                   </div>
-                  <div 
-                    style={{
-                      fontSize: '48px',
-                      fontWeight: '300',
-                      color: '#111827',
-                      lineHeight: '1',
-                      marginBottom: '8px',
-                      fontFamily: 'system-ui, -apple-system, sans-serif'
-                    }}
-                  >
-                    {reportData.summary.avgConsumptionPerKm.toFixed(3)}
+                  <div className="template-metric-value">
+                    {formatInteger(reportData.summary.avgDistance)}
                   </div>
-                  <div 
-                    style={{
-                      fontSize: '14px',
-                      color: '#6b7280',
-                      fontWeight: '500'
-                    }}
-                  >
-                    kWh por quilômetro
+                  <div className="template-metric-unit">
+                    quilômetros por dia
                   </div>
                 </div>
 
-                {/* Médias */}
-                <div 
-                  style={{
-                    padding: '40px 32px',
-                    backgroundColor: '#ffffff',
-                    borderLeft: '4px solid #111827',
-                    boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1)',
-                    display: 'block'
-                  }}
-                >
-                  <div 
-                    style={{
-                      fontSize: '13px',
-                      color: '#6b7280',
-                      fontWeight: '600',
-                      textTransform: 'uppercase',
-                      letterSpacing: '1px',
-                      marginBottom: '12px'
-                    }}
-                  >
-                    Médias do Período
+                {/* Consumo Médio */}
+                <div className="template-metric-card">
+                  <div className="template-metric-header">
+                    <div className="template-metric-title">
+                      <Battery className="template-metric-icon" />
+                      Consumo Médio
+                    </div>
+                    <div className="template-metric-badge success">
+                      <Zap className="template-badge-icon" />
+                      Avg
+                    </div>
                   </div>
-                  <div 
-                    style={{
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center'
-                    }}
-                  >
-                    <div>
-                      <div 
-                        style={{
-                          fontSize: '24px',
-                          fontWeight: '600',
-                          color: '#111827',
-                          lineHeight: '1',
-                          marginBottom: '4px'
-                        }}
-                      >
-                        {reportData.summary.avgDistance.toLocaleString('pt-BR')} km
-                      </div>
-                      <div 
-                        style={{
-                          fontSize: '12px',
-                          color: '#6b7280',
-                          fontWeight: '500'
-                        }}
-                      >
-                        distância média
-                      </div>
-                    </div>
-                    <div 
-                      style={{
-                        width: '1px',
-                        height: '40px',
-                        backgroundColor: '#e5e7eb',
-                        margin: '0 20px'
-                      }}
-                    ></div>
-                    <div>
-                      <div 
-                        style={{
-                          fontSize: '24px',
-                          fontWeight: '600',
-                          color: '#111827',
-                          lineHeight: '1',
-                          marginBottom: '4px'
-                        }}
-                      >
-                        {reportData.summary.avgConsumption.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })} kWh
-                      </div>
-                      <div 
-                        style={{
-                          fontSize: '12px',
-                          color: '#6b7280',
-                          fontWeight: '500'
-                        }}
-                      >
-                        consumo médio
-                      </div>
-                    </div>
+                  <div className="template-metric-value">
+                    {formatDecimal1(reportData.summary.avgConsumption)}
+                  </div>
+                  <div className="template-metric-unit">
+                    quilowatt-hora por dia
                   </div>
                 </div>
               </div>
@@ -482,22 +266,14 @@ export const ReportGenerator = () => {
 
           {/* Segunda Página - Dados Detalhados */}
           <div 
-            className="bg-white p-12 shadow-lg print:shadow-none print:p-0 print:m-0" 
-            style={{ 
-              minHeight: '297mm',
-              display: 'block',
-              visibility: 'visible',
-              opacity: 1,
-              position: 'relative',
-              backgroundColor: '#ffffff',
-              padding: '15mm', // Margens reduzidas para dar mais espaço à tabela
-              margin: '0',
-              boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
-              borderRadius: '8px',
-              width: '210mm', // Largura exata do A4
-              boxSizing: 'border-box'
-            }}
+            className="template-page" 
             data-page="2"
+            style={{
+              minHeight: 'auto',
+              height: 'auto',
+              overflow: 'visible',
+              pageBreakInside: 'avoid'
+            }}
           >
             {/* Header da segunda página simplificado */}
             <div 
@@ -518,7 +294,7 @@ export const ReportGenerator = () => {
                   margin: '0'
                 }}
               >
-                Dados Detalhados
+                Dados
               </h2>
               <div 
                 style={{
@@ -531,141 +307,34 @@ export const ReportGenerator = () => {
                 <div>{reportData.detailedData.length} registros</div>
               </div>
             </div>
-            {/* Título da seção de dados */}
-            <div 
-              style={{
-                marginBottom: '32px'
-              }}
-            >
-              <h2 
-                style={{
-                  fontSize: '20px',
-                  fontWeight: '700',
-                  color: '#111827',
-                  marginBottom: '8px',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px'
-                }}
-              >
-                Dados Detalhados
-              </h2>
-              <div 
-                style={{
-                  width: '40px',
-                  height: '2px',
-                  backgroundColor: '#111827'
-                }}
-              ></div>
-            </div>
 
             {/* Container da tabela */}
             <div 
+              className="template-table-container"
               style={{
-                backgroundColor: '#ffffff',
-                border: '1px solid #e5e7eb',
-                borderRadius: '0',
-                overflow: 'hidden'
+                width: '100%',
+                overflow: 'visible',
+                height: 'auto',
+                minHeight: 'auto'
               }}
             >
               <table 
+                className="template-table"
                 style={{
                   width: '100%',
                   borderCollapse: 'collapse',
-                  margin: '0',
-                  fontSize: '13px'
+                  fontSize: '13px',
+                  pageBreakInside: 'auto'
                 }}
               >
                 <thead>
-                  <tr 
-                    style={{
-                      backgroundColor: '#f9fafb',
-                      borderBottom: '2px solid #111827'
-                    }}
-                  >
-                    <th 
-                      style={{
-                        padding: '16px 12px',
-                        textAlign: 'center',
-                        fontSize: '11px',
-                        fontWeight: '700',
-                        color: '#111827',
-                        textTransform: 'uppercase',
-                        letterSpacing: '1px',
-                        width: '16%'
-                      }}
-                    >
-                      Data
-                    </th>
-                    <th 
-                      style={{
-                        padding: '16px 12px',
-                        textAlign: 'center',
-                        fontSize: '11px',
-                        fontWeight: '700',
-                        color: '#111827',
-                        textTransform: 'uppercase',
-                        letterSpacing: '1px',
-                        width: '18%'
-                      }}
-                    >
-                      Dist. Acum. (km)
-                    </th>
-                    <th 
-                      style={{
-                        padding: '16px 12px',
-                        textAlign: 'center',
-                        fontSize: '11px',
-                        fontWeight: '700',
-                        color: '#111827',
-                        textTransform: 'uppercase',
-                        letterSpacing: '1px',
-                        width: '18%'
-                      }}
-                    >
-                      Cons. Acum. (kWh)
-                    </th>
-                    <th 
-                      style={{
-                        padding: '16px 12px',
-                        textAlign: 'center',
-                        fontSize: '11px',
-                        fontWeight: '700',
-                        color: '#111827',
-                        textTransform: 'uppercase',
-                        letterSpacing: '1px',
-                        width: '16%'
-                      }}
-                    >
-                      Distância (km)
-                    </th>
-                    <th 
-                      style={{
-                        padding: '16px 12px',
-                        textAlign: 'center',
-                        fontSize: '11px',
-                        fontWeight: '700',
-                        color: '#111827',
-                        textTransform: 'uppercase',
-                        letterSpacing: '1px',
-                        width: '16%'
-                      }}
-                    >
-                      Consumo (kWh)
-                    </th>
-                    <th 
-                      style={{
-                        padding: '16px 12px',
-                        textAlign: 'center',
-                        fontSize: '11px',
-                        fontWeight: '700',
-                        color: '#111827',
-                        textTransform: 'uppercase',
-                        letterSpacing: '1px',
-                        width: '16%'
-                      }}
-                    >
-                      Eficiência
-                    </th>
+                  <tr>
+                    <th style={{ width: '16%' }}>Data</th>
+                    <th style={{ width: '18%' }}>Odômetro (km)</th>
+                    <th style={{ width: '18%' }}>Consumo Acumulado (kWh)</th>
+                    <th style={{ width: '16%' }}>Distância (km)</th>
+                    <th style={{ width: '16%' }}>Consumo (kWh)</th>
+                    <th style={{ width: '16%' }}>Eficiência (kWh/km)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -673,75 +342,27 @@ export const ReportGenerator = () => {
                     <tr 
                       key={index}
                       style={{
-                        backgroundColor: index % 2 === 0 ? '#ffffff' : '#f9fafb',
-                        borderBottom: '1px solid #e5e7eb'
+                        pageBreakInside: 'avoid',
+                        breakInside: 'avoid'
                       }}
                     >
-                      <td 
-                        style={{
-                          padding: '14px 12px',
-                          textAlign: 'center',
-                          fontSize: '13px',
-                          color: '#111827',
-                          fontWeight: '600'
-                        }}
-                      >
+                      <td style={{ color: '#111827', fontWeight: '600', padding: '8px 4px' }}>
                         {formatDateBR(row.date)}
                       </td>
-                      <td 
-                        style={{
-                          padding: '14px 12px',
-                          textAlign: 'center',
-                          fontSize: '13px',
-                          color: '#6b7280',
-                          fontWeight: '500'
-                        }}
-                      >
-                        {row.accumulatedDistance.toLocaleString('pt-BR')}
+                      <td style={{ color: '#6b7280', fontWeight: '500', padding: '8px 4px' }}>
+                        {formatInteger(row.accumulatedDistance)}
                       </td>
-                      <td 
-                        style={{
-                          padding: '14px 12px',
-                          textAlign: 'center',
-                          fontSize: '13px',
-                          color: '#6b7280',
-                          fontWeight: '500'
-                        }}
-                      >
-                        {row.accumulatedConsumption.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                      <td style={{ color: '#6b7280', fontWeight: '500', padding: '8px 4px' }}>
+                        {formatDecimal1(row.accumulatedConsumption)}
                       </td>
-                      <td 
-                        style={{
-                          padding: '14px 12px',
-                          textAlign: 'center',
-                          fontSize: '13px',
-                          color: '#111827',
-                          fontWeight: '600'
-                        }}
-                      >
-                        {row.distance.toLocaleString('pt-BR')}
+                      <td style={{ color: '#111827', fontWeight: '600', padding: '8px 4px' }}>
+                        {formatInteger(row.distance)}
                       </td>
-                      <td 
-                        style={{
-                          padding: '14px 12px',
-                          textAlign: 'center',
-                          fontSize: '13px',
-                          color: '#111827',
-                          fontWeight: '600'
-                        }}
-                      >
-                        {row.consumption.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}
+                      <td style={{ color: '#111827', fontWeight: '600', padding: '8px 4px' }}>
+                        {formatDecimal1(row.consumption)}
                       </td>
-                      <td 
-                        style={{
-                          padding: '14px 12px',
-                          textAlign: 'center',
-                          fontSize: '13px',
-                          color: '#111827',
-                          fontWeight: '700'
-                        }}
-                      >
-                        {row.consumptionPerKm.toFixed(3)}
+                      <td style={{ color: '#111827', fontWeight: '700', padding: '8px 4px' }}>
+                        {formatEfficiency(row.consumptionPerKm).replace(' kWh/km', '')}
                       </td>
                     </tr>
                   ))}
@@ -750,21 +371,8 @@ export const ReportGenerator = () => {
             </div>
             
             {/* Rodapé da segunda página */}
-            <div 
-              style={{
-                marginTop: '48px',
-                paddingTop: '20px',
-                borderTop: '1px solid #e5e7eb',
-                textAlign: 'center'
-              }}
-            >
-              <div 
-                style={{
-                  fontSize: '11px',
-                  color: '#6b7280',
-                  fontWeight: '500'
-                }}
-              >
+            <div className="template-footer">
+              <div className="template-footer-text">
                 Dados baseados em telemetria do veículo
               </div>
             </div>
@@ -775,104 +383,196 @@ export const ReportGenerator = () => {
   }
 
   return (
-    <div className="space-y-6">
-      <Card className="hover:shadow-electric-hover transition-all duration-300">
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <FileText className="h-5 w-5 text-primary" />
+    <div className="space-y-4">
+      <Card className="hover:shadow-electric-hover transition-all duration-200">
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-base">
+            <div className="p-2 rounded-lg bg-primary/10">
+              <FileText className="h-4 w-4 text-primary" />
+            </div>
             Configurações do relatório
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="period" className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              Período do relatório
-            </Label>
-            <Input
-              id="period"
-              value={period}
-              onChange={(e) => setPeriod(e.target.value)}
-              placeholder="Ex: Janeiro 2024"
-            />
+        <CardContent className="space-y-3">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="startDate" className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                Data inicial
+              </Label>
+              <Input
+                id="startDate"
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+              />
+            </div>
+            
+            <div className="space-y-2">
+              <Label htmlFor="endDate" className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                Data final
+              </Label>
+              <Input
+                id="endDate"
+                type="date"
+                value={endDate}
+                onChange={(e) => setEndDate(e.target.value)}
+              />
+            </div>
           </div>
+
+          {/* Indicador de progresso */}
+          {isLoading && (
+            <Card className="border-blue-200 bg-blue-50/50">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-blue-100">
+                    <RefreshCw className="h-4 w-4 animate-spin text-blue-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-blue-900">
+                      Coletando dados da API...
+                    </p>
+                    {progress.total > 0 && (
+                      <div className="mt-2">
+                        <div className="flex justify-between text-xs text-blue-600 mb-1">
+                          <span>{progress.currentDevice && `${progress.currentDevice}`}</span>
+                          <span>{progress.current}/{progress.total}</span>
+                        </div>
+                        <div className="w-full bg-blue-200 rounded-full h-2">
+                          <div 
+                            className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                            style={{ width: `${(progress.current / progress.total) * 100}%` }}
+                          ></div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Erro */}
+          {error && (
+            <Card className="border-red-200 bg-red-50/50">
+              <CardContent className="p-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-red-100">
+                    <AlertCircle className="h-4 w-4 text-red-600" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-medium text-red-600">Erro ao carregar dados</p>
+                    <p className="text-xs text-red-600 mt-1">{error}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
 
           <div className="pt-4 space-y-2">
             <Button 
               className="w-full" 
-              onClick={() => setShowPreview(true)}
+              onClick={handleLoadData}
+              disabled={isLoading}
             >
-              <FileText className="h-4 w-4 mr-2" />
-              Visualizar template
+              {isLoading ? (
+                <RefreshCw className="h-4 w-4 mr-2 animate-spin" />
+              ) : (
+                <FileText className="h-4 w-4 mr-2" />
+              )}
+              {isLoading ? 'Carregando dados...' : 'Gerar relatório'}
             </Button>
+            
+            {lastUpdated && (
+              <p className="text-xs text-muted-foreground text-center">
+                Última atualização: {lastUpdated.toLocaleString('pt-BR')}
+              </p>
+            )}
           </div>
         </CardContent>
       </Card>
 
-      {/* Preview Cards */}
-      <div className="flex justify-center">
-        <div className="grid grid-cols-2 md:grid-cols-5 gap-4 max-w-6xl">
-          <Card className="hover:shadow-electric-hover transition-all duration-300">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">
-                  {reportData.summary.totalDistance.toFixed(0)}
-                </div>
-                <div className="text-sm text-muted-foreground">km</div>
-                <div className="text-xs text-muted-foreground mt-1">Distância Total</div>
-              </div>
-            </CardContent>
-          </Card>
+      {/* Seleção de Dispositivos */}
+      <DeviceSelector
+        selectedDevices={selectedDevices}
+        onSelectionChange={updateSelection}
+        maxSelections={10}
+        showSerialNumbers={true}
+      />
 
-          <Card className="hover:shadow-electric-hover transition-all duration-300">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">
-                  {reportData.summary.avgDistance.toFixed(0)}
+      {/* Preview Cards - mostrar apenas se há dados */}
+      {(showPreview && data.length > 0) && (
+        <div className="flex justify-center">
+          <div className="grid grid-cols-2 md:grid-cols-5 gap-3 max-w-6xl">
+            {/* Distância Total */}
+            <Card className="hover:shadow-electric-hover transition-all duration-200">
+              <CardContent className="p-4">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-primary mb-1">
+                    {formatInteger(reportData.summary.totalDistance)}
+                  </div>
+                  <div className="text-xs text-muted-foreground mb-2">km</div>
+                  <div className="text-xs text-muted-foreground">Soma dos Valores Diários</div>
                 </div>
-                <div className="text-sm text-muted-foreground">km</div>
-                <div className="text-xs text-muted-foreground mt-1">Distância Média</div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          <Card className="hover:shadow-electric-hover transition-all duration-300">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">
-                  {reportData.summary.totalConsumption.toFixed(2)}
+            {/* Distância Média */}
+            <Card className="hover:shadow-electric-hover transition-all duration-200">
+              <CardContent className="p-4">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-primary mb-1">
+                    {formatInteger(reportData.summary.avgDistance)}
+                  </div>
+                  <div className="text-xs text-muted-foreground mb-2">km</div>
+                  <div className="text-xs text-muted-foreground">Distância Média</div>
                 </div>
-                <div className="text-sm text-muted-foreground">kWh</div>
-                <div className="text-xs text-muted-foreground mt-1">Consumo Total</div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          <Card className="hover:shadow-electric-hover transition-all duration-300">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">
-                  {reportData.summary.avgConsumption.toFixed(2)}
+            {/* Consumo Total */}
+            <Card className="hover:shadow-electric-hover transition-all duration-200">
+              <CardContent className="p-4">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-primary mb-1">
+                    {formatDecimal2(reportData.summary.totalConsumption)}
+                  </div>
+                  <div className="text-xs text-muted-foreground mb-2">kWh</div>
+                  <div className="text-xs text-muted-foreground">Soma dos Valores Diários</div>
                 </div>
-                <div className="text-sm text-muted-foreground">kWh</div>
-                <div className="text-xs text-muted-foreground mt-1">Consumo Médio</div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
 
-          <Card className="hover:shadow-electric-hover transition-all duration-300">
-            <CardContent className="pt-6">
-              <div className="text-center">
-                <div className="text-2xl font-bold text-primary">
-                  {reportData.summary.avgConsumptionPerKm.toFixed(3)}
+            {/* Consumo Médio */}
+            <Card className="hover:shadow-electric-hover transition-all duration-200">
+              <CardContent className="p-4">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-primary mb-1">
+                    {formatDecimal2(reportData.summary.avgConsumption)}
+                  </div>
+                  <div className="text-xs text-muted-foreground mb-2">kWh</div>
+                  <div className="text-xs text-muted-foreground">Consumo Médio</div>
                 </div>
-                <div className="text-sm text-muted-foreground">kWh/km</div>
-                <div className="text-xs text-muted-foreground mt-1">Consumo Médio por KM</div>
-              </div>
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+
+            {/* Eficiência Energética */}
+            <Card className="hover:shadow-electric-hover transition-all duration-200">
+              <CardContent className="p-4">
+                <div className="text-center">
+                  <div className="text-lg font-bold text-primary mb-1">
+                    {formatEfficiency(reportData.summary.avgConsumptionPerKm).replace(' kWh/km', '')}
+                  </div>
+                  <div className="text-xs text-muted-foreground mb-2">kWh/km</div>
+                  <div className="text-xs text-muted-foreground">Média das Eficiências</div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };
