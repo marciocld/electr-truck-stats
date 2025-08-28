@@ -417,11 +417,13 @@
     align-items: center !important;
     justify-content: flex-start !important;
     gap: 6px !important;
-    line-height: normal !important;
-    vertical-align: middle !important;
+    line-height: 1 !important;
+    vertical-align: baseline !important;
     min-height: auto !important;
     height: auto !important;
     box-sizing: border-box !important;
+    position: relative !important;
+    top: 0 !important;
   }
   
   .html2canvas-render .template-metric-badge {
@@ -439,12 +441,14 @@
     align-items: center !important;
     justify-content: center !important;
     gap: 6px !important;
-    line-height: normal !important;
+    line-height: 1 !important;
     min-height: auto !important;
     height: auto !important;
-    vertical-align: middle !important;
+    vertical-align: baseline !important;
     box-sizing: border-box !important;
     flex-shrink: 0 !important;
+    position: relative !important;
+    top: 0 !important;
   }
   
   .html2canvas-render .template-metric-badge.primary {
@@ -604,10 +608,12 @@
     display: flex !important;
     align-items: center !important;
     gap: 6px !important;
-    line-height: normal !important;
-    vertical-align: middle !important;
+    line-height: 1 !important;
+    vertical-align: baseline !important;
     min-height: auto !important;
     height: auto !important;
+    position: relative !important;
+    top: 0 !important;
   }
   
   .template-metric-badge {
@@ -624,10 +630,12 @@
     display: flex !important;
     align-items: center !important;
     gap: 6px !important;
-    line-height: normal !important;
+    line-height: 1 !important;
     min-height: auto !important;
     height: auto !important;
-    vertical-align: middle !important;
+    vertical-align: baseline !important;
+    position: relative !important;
+    top: 0 !important;
   }
   
   .template-metric-badge.primary {
