@@ -418,7 +418,7 @@
     justify-content: flex-start !important;
     gap: 6px !important;
     line-height: 1 !important;
-    vertical-align: baseline !important;
+    vertical-align: middle !important;
     min-height: auto !important;
     height: auto !important;
     box-sizing: border-box !important;
@@ -444,7 +444,7 @@
     line-height: 1 !important;
     min-height: auto !important;
     height: auto !important;
-    vertical-align: baseline !important;
+    vertical-align: middle !important;
     box-sizing: border-box !important;
     flex-shrink: 0 !important;
     position: relative !important;
@@ -607,11 +607,13 @@
     flex: 1 !important;
     display: flex !important;
     align-items: center !important;
+    justify-content: flex-start !important;
     gap: 6px !important;
     line-height: 1 !important;
-    vertical-align: baseline !important;
+    vertical-align: middle !important;
     min-height: auto !important;
     height: auto !important;
+    box-sizing: border-box !important;
     position: relative !important;
     top: 0 !important;
   }
@@ -629,11 +631,14 @@
     white-space: nowrap !important;
     display: flex !important;
     align-items: center !important;
+    justify-content: center !important;
     gap: 6px !important;
     line-height: 1 !important;
     min-height: auto !important;
     height: auto !important;
-    vertical-align: baseline !important;
+    vertical-align: middle !important;
+    box-sizing: border-box !important;
+    flex-shrink: 0 !important;
     position: relative !important;
     top: 0 !important;
   }

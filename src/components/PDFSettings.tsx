@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Switch } from '@/components/ui/switch';
 import { Settings, FileText, Download } from 'lucide-react';
-import { PDFOptions } from '@/lib/pdfService';
+import { PDFOptions } from '@/lib/pdf/pdfService';
 
 interface PDFSettingsProps {
   onGeneratePDF: (options: PDFOptions) => void;

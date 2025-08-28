@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Skeleton } from '@/components/ui/skeleton';
 import { FileText, Download, Calendar, Building, AlertCircle, RefreshCw, Truck, Battery, Zap, TrendingUp, MapPin, Gauge } from 'lucide-react';
 import companyLogo from '@/assets/company-logo.png';
-import { pdfService, PDFOptions, ReportData } from '@/lib/pdfService';
+import { pdfService, PDFOptions, ReportData } from '@/lib/pdf/pdfService';
 import { useElectricTruckData } from '@/hooks/useElectricTruckData';
 import { useDeviceSelection } from '@/hooks/useDeviceSelection';
 import { DeviceSelector } from '@/components/DeviceSelector';
