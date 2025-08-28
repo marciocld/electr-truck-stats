@@ -153,23 +153,23 @@ export const ReportGenerator = () => {
               <table className="w-full">
                 <thead className="bg-gray-50">
                   <tr>
-                    <th className="px-4 py-3 text-left text-sm font-semibold text-gray-900">Data</th>
-                    <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">Dist. Acum.</th>
-                    <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">Cons. Acum.</th>
-                    <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">Distância</th>
-                    <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">Consumo</th>
-                    <th className="px-4 py-3 text-right text-sm font-semibold text-gray-900">Cons/KM</th>
+                    <th className="px-4 py-3 text-center text-sm font-semibold text-gray-900 w-[20%]">Data</th>
+                    <th className="px-4 py-3 text-center text-sm font-semibold text-gray-900 w-[16%]">Dist. Acum.</th>
+                    <th className="px-4 py-3 text-center text-sm font-semibold text-gray-900 w-[16%]">Cons. Acum.</th>
+                    <th className="px-4 py-3 text-center text-sm font-semibold text-gray-900 w-[16%]">Distância</th>
+                    <th className="px-4 py-3 text-center text-sm font-semibold text-gray-900 w-[16%]">Consumo</th>
+                    <th className="px-4 py-3 text-center text-sm font-semibold text-gray-900 w-[16%]">Cons/KM</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-200">
                   {reportData.detailedData.map((row, index) => (
                     <tr key={index} className="hover:bg-gray-50">
-                      <td className="px-4 py-3 text-sm text-gray-900">{row.date}</td>
-                      <td className="px-4 py-3 text-sm text-gray-900 text-right">{row.accumulatedDistance.toFixed(0)}</td>
-                      <td className="px-4 py-3 text-sm text-gray-900 text-right">{row.accumulatedConsumption.toFixed(2)}</td>
-                      <td className="px-4 py-3 text-sm text-gray-900 text-right">{row.distance.toFixed(0)}</td>
-                      <td className="px-4 py-3 text-sm text-gray-900 text-right">{row.consumption.toFixed(2)}</td>
-                      <td className="px-4 py-3 text-sm text-gray-900 text-right">{row.consumptionPerKm.toFixed(3)}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900 text-center">{row.date}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900 text-center">{row.accumulatedDistance.toFixed(0)}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900 text-center">{row.accumulatedConsumption.toFixed(2)}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900 text-center">{row.distance.toFixed(0)}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900 text-center">{row.consumption.toFixed(2)}</td>
+                      <td className="px-4 py-3 text-sm text-gray-900 text-center">{row.consumptionPerKm.toFixed(3)}</td>
                     </tr>
                   ))}
                 </tbody>
