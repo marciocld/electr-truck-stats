@@ -293,9 +293,12 @@
 
 .template-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   margin: 0;
   font-size: 13px;
+  border-radius: 10px;
+  overflow: hidden;
 }
 
 .template-table th {
