@@ -67,10 +67,6 @@ export class PDFTemplateGenerator {
    * Adiciona cabeçalho do relatório - com logo da empresa
    */
   private addHeader(period: string): void {
-    // Fundo sutil para o cabeçalho
-    this.doc.setFillColor(249, 250, 251);
-    this.doc.rect(0, 0, this.pageWidth, 70, 'F');
-    
     // Logo da empresa com dimensões proporcionais
     try {
       const img = new Image();
@@ -106,8 +102,8 @@ export class PDFTemplateGenerator {
       const rightX = this.pageWidth - this.margin.right;
       const infoY = this.currentY + 2;
       
-      // Container para informações do período
-      this.doc.setFillColor(255, 255, 255);
+      // Container para informações do período com destaque cinza
+      this.doc.setFillColor(245, 247, 249); // HSL(216, 27%, 97%) aproximado em RGB
       this.doc.roundedRect(rightX - 65, infoY - 3, 65, 22, 2, 2, 'F');
       this.doc.setDrawColor(230, 230, 230);
       this.doc.setLineWidth(0.2);
