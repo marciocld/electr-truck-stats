@@ -1,4 +1,4 @@
-import { Card, CardContent, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { 
@@ -8,7 +8,8 @@ import {
   DollarSign,
   TrendingUp,
   AlertCircle,
-  RefreshCw
+  RefreshCw,
+  MapPin
 } from "lucide-react";
 import { useElectricTruckData } from "@/hooks/useElectricTruckData";
 import { Button } from "@/components/ui/button";
@@ -46,8 +47,8 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
       value: isLoading ? "..." : formatDistance(summary.totalDistance),
       description: "Soma dos valores diários da tabela",
       icon: Truck,
-      color: "text-electric-blue",
-      bgColor: "bg-electric-blue/10",
+      color: "text-report-blue",
+      bgColor: "bg-report-light-blue",
       trend: `${summary.onlineCount + summary.offlineCount + summary.persistedCount} registros`
     },
     {
@@ -55,8 +56,8 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
       value: isLoading ? "..." : formatConsumption(summary.totalConsumption),
       description: "Soma dos valores diários da tabela",
       icon: Battery,
-      color: "text-electric-green",
-      bgColor: "bg-electric-green/10",
+      color: "text-report-gray",
+      bgColor: "bg-gray-100",
       trend: `${formatDecimal1(summary.avgConsumption)} kWh/dia médio`
     },
     {
@@ -64,17 +65,17 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
       value: isLoading ? "..." : formatEfficiency(summary.avgConsumptionPerKm),
       description: "Média das eficiências da tabela",
       icon: Zap,
-      color: "text-electric-yellow",
-      bgColor: "bg-electric-yellow/10",
+      color: "text-report-dark-blue",
+      bgColor: "bg-report-light-blue/50",
       trend: summary.avgConsumptionPerKm < 0.2 ? "Excelente eficiência" : "Boa eficiência"
     },
     {
       title: "Distância Média",
       value: isLoading ? "..." : formatDistance(summary.avgDistance),
       description: "Média dos valores diários da tabela",
-      icon: DollarSign,
-      color: "text-electric-purple",
-      bgColor: "bg-electric-purple/10",
+      icon: MapPin, // Ícone mais apropriado
+      color: "text-report-gray",
+      bgColor: "bg-gray-100",
       trend: `${summary.onlineCount} online, ${summary.offlineCount} offline`
     }
   ];
@@ -146,52 +147,22 @@ export const StatsCards: React.FC<StatsCardsProps> = ({
       )}
 
       {/* Cards de estatísticas */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        {stats.map((stat, index) => {
-          const IconComponent = stat.icon;
-          return (
-            <Card key={index} className="relative overflow-hidden hover:shadow-electric-hover transition-all duration-200">
-              <CardContent className="p-4">
-                {isLoading ? (
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between">
-                      <Skeleton className="h-4 w-20" />
-                      <Skeleton className="h-8 w-8 rounded-lg" />
-                    </div>
-                    <Skeleton className="h-6 w-16" />
-                    <Skeleton className="h-3 w-full" />
-                  </div>
-                ) : (
-                  <>
-                    {/* Header com ícone */}
-                    <div className="flex items-center justify-between mb-3">
-                      <CardTitle className="text-xs font-medium text-muted-foreground">
-                        {stat.title}
-                      </CardTitle>
-                      <div className={`p-2 rounded-lg ${stat.bgColor}`}>
-                        <IconComponent className={`h-4 w-4 ${stat.color}`} />
-                      </div>
-                    </div>
-                    
-                    {/* Valor principal */}
-                    <div className="text-lg font-bold mb-2">{stat.value}</div>
-                    
-                    {/* Badge com trend */}
-                    <Badge variant="outline" className="text-xs h-5 px-2">
-                      <TrendingUp className="h-3 w-3 mr-1" />
-                      {stat.trend}
-                    </Badge>
-                  </>
-                )}
-              </CardContent>
-            </Card>
-          );
-        })}
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+        {stats.map((stat, index) => (
+          <Card key={index} className="border-report-dark-blue/10 shadow-sm hover:shadow-md transition-shadow duration-300">
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-report-gray">{stat.title}</CardTitle>
+              <stat.icon className={`h-5 w-5 ${stat.color}`} />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold text-report-dark-blue">{stat.value}</div>
+              <p className="text-xs text-muted-foreground pt-1">{stat.description}</p>
+            </CardContent>
+          </Card>
+        ))}
       </div>
-
-      {/* Informações adicionais */}
-      {!isLoading && lastUpdated && (
-        <div className="flex items-center justify-between text-xs text-muted-foreground mt-2">
+      {lastUpdated && (
+        <div className="text-xs text-center text-gray-500 mt-4">
           <span>
             Última atualização: {lastUpdated.toLocaleString('pt-BR')}
           </span>

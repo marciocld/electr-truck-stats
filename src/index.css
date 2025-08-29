@@ -40,6 +40,12 @@ All colors MUST be HSL.
     --eco-gradient: linear-gradient(135deg, hsl(var(--electric-green)), hsl(var(--electric-blue)));
     --hero-gradient: linear-gradient(135deg, hsl(var(--electric-blue)), hsl(var(--energy-purple)));
     
+    /* Report professional theme */
+    --report-blue: 217 91% 60%;
+    --report-gray: 215 28% 17%;
+    --report-light-blue: 216 34% 92%;
+    --report-dark-blue: 215 30% 25%;
+    
     /* Shadows */
     --shadow-electric: 0 10px 30px -10px hsl(var(--electric-blue) / 0.3);
     --shadow-eco: 0 10px 30px -10px hsl(var(--electric-green) / 0.3);

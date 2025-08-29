@@ -61,6 +61,12 @@ export default {
 					yellow: 'hsl(var(--battery-yellow))',
 					purple: 'hsl(var(--energy-purple))'
 				},
+				report: {
+					blue: 'hsl(var(--report-blue))',
+					gray: 'hsl(var(--report-gray))',
+					'light-blue': 'hsl(var(--report-light-blue))',
+					'dark-blue': 'hsl(var(--report-dark-blue))',
+				},
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',
