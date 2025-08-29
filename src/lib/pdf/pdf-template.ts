@@ -295,8 +295,8 @@ export class PDFTemplateGenerator {
     headers.forEach((header, index) => {
       const centerX = currentX + colWidths[index] / 2;
       
-      // Calcular posição Y para centralizar o texto verticalmente
-      const lineHeight = 2.5;
+      // Calcular posição Y para centralizar o texto verticalmente com maior espaçamento
+      const lineHeight = 3.5; // Aumentado de 2.5 para 3.5 para maior espaçamento
       const totalTextHeight = header.lines.length * lineHeight;
       const startY = this.currentY + (headerHeight - totalTextHeight) / 2 + lineHeight;
       
