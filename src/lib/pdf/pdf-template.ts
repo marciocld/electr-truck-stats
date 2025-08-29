@@ -1,6 +1,7 @@
 import jsPDF from 'jspdf';
 import { PDFOptions, ReportData } from './types';
 import { formatDateBR, formatDistance, formatConsumption, formatEfficiency, formatDistanceValue, formatConsumptionValue, formatEfficiencyValue, formatDecimal1, formatDecimal2, formatInteger } from '../formatters';
+import logo from '@/assets/company-logo.png';
 
 /**
  * Classe responsável por gerar PDF usando template nativo do jsPDF
@@ -67,47 +68,88 @@ export class PDFTemplateGenerator {
    */
   private addHeader(period: string): void {
     // Header com logo e período em linha (sem barra superior)
-    // Logo da empresa com dimensões maiores
+    // Logo da empresa com dimensões proporcionais
     try {
-      // Adicionar logo da empresa com tamanho controlado
-      this.doc.addImage('/src/assets/company-logo.png', 'PNG', this.margin.left, this.currentY, 48, 32);
+      // Cria uma imagem HTML temporária para obter as dimensões reais
+      const img = new Image();
+      img.src = logo;
+      
+      // Define largura fixa desejada em mm
+      const targetWidth = 48;
+      
+      // Calcula altura proporcional baseada nas dimensões naturais da imagem
+      // Usando proporção padrão caso não consiga carregar
+      let targetHeight = 32; // fallback
+      
+      if (img.naturalWidth && img.naturalHeight) {
+        targetHeight = (img.naturalHeight * targetWidth) / img.naturalWidth;
+      }
+      
+      // Insere a imagem com as dimensões calculadas
+      this.doc.addImage(
+        logo,
+        'PNG',
+        this.margin.left,
+        this.currentY,
+        targetWidth,
+        targetHeight,
+        undefined,
+        'NONE'
+      );
+      
+      // Período e data no lado direito, centralizados verticalmente com o logotipo
+      const logoCenterY = this.currentY + (targetHeight / 2);
+      
+      this.doc.setTextColor(28, 25, 23); // report-dark-blue equivalent
+      this.doc.setFontSize(10);
+      this.doc.setFont('helvetica', 'bold');
+      this.doc.text(period, this.pageWidth - this.margin.right, logoCenterY - 3, { align: 'right' });
+      
+      this.doc.setTextColor(107, 114, 128); // muted color
+      this.doc.setFontSize(8);
+      this.doc.setFont('helvetica', 'normal');
+      const now = new Date();
+      this.doc.text(formatDateBR(now), this.pageWidth - this.margin.right, logoCenterY + 7, { align: 'right' });
+      
+      this.currentY += targetHeight;
     } catch (error) {
       // Fallback se a imagem não carregar
       this.doc.setFillColor(28, 25, 23);
-      this.doc.rect(this.margin.left, this.currentY, 35, 12);
+      this.doc.rect(this.margin.left, this.currentY, 53, 53, 'F');
       this.doc.setTextColor(255, 255, 255);
+      this.doc.setFontSize(12);
+      this.doc.setFont('helvetica', 'bold');
+      this.doc.text('LOGO', this.margin.left + 24, this.currentY + 16, { align: 'center' });
+      
+      // Período e data no lado direito, centralizados verticalmente com o fallback
+      const fallbackCenterY = this.currentY + 24; // Centro do retângulo de 48px de altura
+      
+      this.doc.setTextColor(28, 25, 23); // report-dark-blue equivalent
       this.doc.setFontSize(10);
       this.doc.setFont('helvetica', 'bold');
-      this.doc.text('LOGO', this.margin.left + 17.5, this.currentY + 7.5, { align: 'center' });
+      this.doc.text(period, this.pageWidth - this.margin.right, fallbackCenterY - 3, { align: 'right' });
+      
+      this.doc.setTextColor(107, 114, 128); // muted color
+      this.doc.setFontSize(8);
+      this.doc.setFont('helvetica', 'normal');
+      const now = new Date();
+      this.doc.text(formatDateBR(now), this.pageWidth - this.margin.right, fallbackCenterY + 7, { align: 'right' });
+      
+      this.currentY += 32;
     }
-    
-    // Período e data no lado direito
-    this.doc.setTextColor(28, 25, 23); // report-dark-blue equivalent
-    this.doc.setFontSize(10);
-    this.doc.setFont('helvetica', 'bold');
-    this.doc.text(period, this.pageWidth - this.margin.right, this.currentY + 3, { align: 'right' });
-    
-    this.doc.setTextColor(107, 114, 128); // muted color
-    this.doc.setFontSize(8);
-    this.doc.setFont('helvetica', 'normal');
-    const now = new Date();
-    this.doc.text(formatDateBR(now), this.pageWidth - this.margin.right, this.currentY + 8, { align: 'right' });
     
     this.currentY += 20; // Ajustado para acomodar logo com tamanho controlado
     
-    // Título principal centralizado
+    // Título principal alinhado à esquerda
     this.doc.setTextColor(28, 25, 23); // report-dark-blue
     this.doc.setFontSize(22);
     this.doc.setFont('helvetica', 'bold');
-    this.doc.text('Relatório de consumo', this.pageWidth / 2, this.currentY, { align: 'center' });
+    this.doc.text('Relatório de consumo', this.margin.left, this.currentY);
     
-    this.currentY += 15;
-    
-    // Linha divisória centralizada
-    const lineWidth = 25;
-    const lineX = (this.pageWidth - lineWidth) / 2;
-    this.doc.setFillColor(59, 130, 246); // report-blue
-    this.doc.rect(lineX, this.currentY, lineWidth, 1.5, 'F');
+    // Linha separadora (mesmo estilo da página "Dados")
+    this.doc.setDrawColor(229, 231, 235);
+    this.doc.setLineWidth(0.5);
+    this.doc.line(this.margin.left, this.currentY + 8, this.pageWidth - this.margin.right, this.currentY + 8);
     
     this.currentY += 15;
   }
@@ -197,7 +239,9 @@ export class PDFTemplateGenerator {
       this.doc.setTextColor(metric.badgeColor[0], metric.badgeColor[1], metric.badgeColor[2]);
       this.doc.setFontSize(5); // Reduzido de 6 para 5
       this.doc.setFont('helvetica', 'bold');
-      this.doc.text(metric.badge, badgeX + badgeWidth/2, badgeY + badgeHeight/2 + 1, { align: 'center' });
+      // Centralizar verticalmente o texto no badge
+      const textCenterY = badgeY + badgeHeight/2 + 1.5; // Ajuste fino para centralização
+      this.doc.text(metric.badge, badgeX + badgeWidth/2, textCenterY, { align: 'center' });
       
       // Valor principal centralizado
       this.doc.setTextColor(17, 24, 39); // foreground
