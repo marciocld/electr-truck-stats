@@ -80,12 +80,9 @@ export class PDFTemplateGenerator {
         targetHeight = (img.naturalHeight * targetWidth) / img.naturalWidth;
       }
       
-      // Logo com sombra sutil
-      this.doc.setFillColor(255, 255, 255);
+      // Logo com fundo cinza sutil (sem borda)
+      this.doc.setFillColor(245, 247, 249); // HSL(216, 27%, 97%) aproximado em RGB
       this.doc.roundedRect(this.margin.left - 2, this.currentY - 2, targetWidth + 4, targetHeight + 4, 3, 3, 'F');
-      this.doc.setDrawColor(230, 230, 230);
-      this.doc.setLineWidth(0.2);
-      this.doc.roundedRect(this.margin.left - 2, this.currentY - 2, targetWidth + 4, targetHeight + 4, 3, 3, 'S');
       
       this.doc.addImage(
         logo,
@@ -102,12 +99,9 @@ export class PDFTemplateGenerator {
       const rightX = this.pageWidth - this.margin.right;
       const infoY = this.currentY + 2;
       
-      // Container para informações do período com destaque cinza
+      // Container para informações do período com destaque cinza (sem borda)
       this.doc.setFillColor(245, 247, 249); // HSL(216, 27%, 97%) aproximado em RGB
       this.doc.roundedRect(rightX - 65, infoY - 3, 65, 22, 2, 2, 'F');
-      this.doc.setDrawColor(230, 230, 230);
-      this.doc.setLineWidth(0.2);
-      this.doc.roundedRect(rightX - 65, infoY - 3, 65, 22, 2, 2, 'S');
       
       // Texto "PERÍODO" em cinza pequeno
       this.doc.setTextColor(120, 120, 120);
