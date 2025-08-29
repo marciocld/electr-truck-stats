@@ -250,7 +250,7 @@ export class PDFTemplateGenerator {
       this.doc.setFontSize(5); // Reduzido de 6 para 5
       this.doc.setFont('helvetica', 'bold');
       // Centralizar verticalmente o texto no badge
-      const textCenterY = badgeY + badgeHeight/2 + 1; // Ajustado para melhor centralização
+      const textCenterY = badgeY + badgeHeight/2 + 0.5; // Ajustado para melhor centralização
       this.doc.text(metric.badge, badgeX + badgeWidth/2, textCenterY, { align: 'center' });
       
       // Valor principal centralizado
