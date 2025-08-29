@@ -67,25 +67,30 @@ export class PDFTemplateGenerator {
    * Adiciona cabeçalho do relatório - com logo da empresa
    */
   private addHeader(period: string): void {
-    // Header com logo e período em linha (sem barra superior)
+    // Fundo sutil para o cabeçalho
+    this.doc.setFillColor(249, 250, 251);
+    this.doc.rect(0, 0, this.pageWidth, 70, 'F');
+    
     // Logo da empresa com dimensões proporcionais
     try {
-      // Cria uma imagem HTML temporária para obter as dimensões reais
       const img = new Image();
       img.src = logo;
       
-      // Define largura fixa desejada em mm
-      const targetWidth = 48;
-      
-      // Calcula altura proporcional baseada nas dimensões naturais da imagem
-      // Usando proporção padrão caso não consiga carregar
-      let targetHeight = 32; // fallback
+      // Dimensões otimizadas para profissionalismo
+      const targetWidth = 40;
+      let targetHeight = 25;
       
       if (img.naturalWidth && img.naturalHeight) {
         targetHeight = (img.naturalHeight * targetWidth) / img.naturalWidth;
       }
       
-      // Insere a imagem com as dimensões calculadas
+      // Logo com sombra sutil
+      this.doc.setFillColor(255, 255, 255);
+      this.doc.roundedRect(this.margin.left - 2, this.currentY - 2, targetWidth + 4, targetHeight + 4, 3, 3, 'F');
+      this.doc.setDrawColor(230, 230, 230);
+      this.doc.setLineWidth(0.2);
+      this.doc.roundedRect(this.margin.left - 2, this.currentY - 2, targetWidth + 4, targetHeight + 4, 3, 3, 'S');
+      
       this.doc.addImage(
         logo,
         'PNG',
@@ -97,61 +102,76 @@ export class PDFTemplateGenerator {
         'NONE'
       );
       
-      // Período e data no lado direito, centralizados verticalmente com o logotipo
-      const logoCenterY = this.currentY + (targetHeight / 2);
+      // Informações do relatório à direita com design mais elegante
+      const rightX = this.pageWidth - this.margin.right;
+      const infoY = this.currentY + 2;
       
-      this.doc.setTextColor(28, 25, 23); // report-dark-blue equivalent
-      this.doc.setFontSize(10);
+      // Container para informações do período
+      this.doc.setFillColor(255, 255, 255);
+      this.doc.roundedRect(rightX - 65, infoY - 3, 65, 22, 2, 2, 'F');
+      this.doc.setDrawColor(230, 230, 230);
+      this.doc.setLineWidth(0.2);
+      this.doc.roundedRect(rightX - 65, infoY - 3, 65, 22, 2, 2, 'S');
+      
+      // Texto "PERÍODO" em cinza pequeno
+      this.doc.setTextColor(120, 120, 120);
+      this.doc.setFontSize(7);
+      this.doc.setFont('helvetica', 'normal');
+      this.doc.text('PERÍODO', rightX - 2, infoY + 2, { align: 'right' });
+      
+      // Período em negrito
+      this.doc.setTextColor(45, 45, 45);
+      this.doc.setFontSize(9);
       this.doc.setFont('helvetica', 'bold');
-      this.doc.text(period, this.pageWidth - this.margin.right, logoCenterY - 3, { align: 'right' });
+      this.doc.text(period, rightX - 2, infoY + 7, { align: 'right' });
       
-      this.doc.setTextColor(107, 114, 128); // muted color
-      this.doc.setFontSize(8);
+      // Data de geração
+      this.doc.setTextColor(120, 120, 120);
+      this.doc.setFontSize(7);
       this.doc.setFont('helvetica', 'normal');
       const now = new Date();
-      this.doc.text(formatDateBR(now), this.pageWidth - this.margin.right, logoCenterY + 7, { align: 'right' });
+      this.doc.text(`Gerado em ${formatDateBR(now)}`, rightX - 2, infoY + 13, { align: 'right' });
       
-      this.currentY += targetHeight;
+      this.currentY += Math.max(targetHeight, 22);
     } catch (error) {
-      // Fallback se a imagem não carregar
-      this.doc.setFillColor(28, 25, 23);
-      this.doc.rect(this.margin.left, this.currentY, 53, 53, 'F');
+      // Fallback elegante
+      this.doc.setFillColor(45, 45, 45);
+      this.doc.roundedRect(this.margin.left, this.currentY, 40, 25, 3, 3, 'F');
       this.doc.setTextColor(255, 255, 255);
-      this.doc.setFontSize(12);
-      this.doc.setFont('helvetica', 'bold');
-      this.doc.text('LOGO', this.margin.left + 24, this.currentY + 16, { align: 'center' });
-      
-      // Período e data no lado direito, centralizados verticalmente com o fallback
-      const fallbackCenterY = this.currentY + 24; // Centro do retângulo de 48px de altura
-      
-      this.doc.setTextColor(28, 25, 23); // report-dark-blue equivalent
       this.doc.setFontSize(10);
       this.doc.setFont('helvetica', 'bold');
-      this.doc.text(period, this.pageWidth - this.margin.right, fallbackCenterY - 3, { align: 'right' });
+      this.doc.text('LOGO', this.margin.left + 20, this.currentY + 15, { align: 'center' });
       
-      this.doc.setTextColor(107, 114, 128); // muted color
-      this.doc.setFontSize(8);
-      this.doc.setFont('helvetica', 'normal');
-      const now = new Date();
-      this.doc.text(formatDateBR(now), this.pageWidth - this.margin.right, fallbackCenterY + 7, { align: 'right' });
-      
-      this.currentY += 32;
+      this.currentY += 25;
     }
     
-    this.currentY += 20; // Ajustado para acomodar logo com tamanho controlado
+    this.currentY += 25;
     
-    // Título principal alinhado à esquerda
-    this.doc.setTextColor(28, 25, 23); // report-dark-blue
-    this.doc.setFontSize(22);
+    // Título principal mais elegante
+    this.doc.setTextColor(30, 30, 30);
+    this.doc.setFontSize(26);
     this.doc.setFont('helvetica', 'bold');
-    this.doc.text('Relatório de consumo', this.margin.left, this.currentY);
+    this.doc.text('Relatório de Consumo Energético', this.margin.left, this.currentY);
     
-    // Linha separadora (mesmo estilo da página "Dados")
-    this.doc.setDrawColor(229, 231, 235);
+    // Subtítulo descritivo
+    this.currentY += 10;
+    this.doc.setTextColor(100, 100, 100);
+    this.doc.setFontSize(11);
+    this.doc.setFont('helvetica', 'normal');
+    this.doc.text('Análise detalhada do desempenho e eficiência da frota elétrica', this.margin.left, this.currentY);
+    
+    // Linha divisória mais elegante com gradiente visual
+    this.currentY += 12;
+    this.doc.setDrawColor(200, 200, 200);
+    this.doc.setLineWidth(1.5);
+    this.doc.line(this.margin.left, this.currentY, this.pageWidth - this.margin.right, this.currentY);
+    
+    // Linha mais fina abaixo
+    this.doc.setDrawColor(230, 230, 230);
     this.doc.setLineWidth(0.5);
-    this.doc.line(this.margin.left, this.currentY + 8, this.pageWidth - this.margin.right, this.currentY + 8);
+    this.doc.line(this.margin.left, this.currentY + 2, this.pageWidth - this.margin.right, this.currentY + 2);
     
-    this.currentY += 15;
+    this.currentY += 18;
   }
 
   /**
