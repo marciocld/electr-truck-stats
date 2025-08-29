@@ -69,16 +69,16 @@ export class PDFTemplateGenerator {
     // Header com logo e período em linha (sem barra superior)
     // Logo da empresa com dimensões maiores
     try {
-      // Adicionar logo da empresa com tamanho aumentado
-      this.doc.addImage('/src/assets/company-logo.png', 'PNG', this.margin.left, this.currentY, 35, 15);
+      // Adicionar logo da empresa com tamanho controlado
+      this.doc.addImage('/src/assets/company-logo.png', 'PNG', this.margin.left, this.currentY, 48, 32);
     } catch (error) {
       // Fallback se a imagem não carregar
       this.doc.setFillColor(28, 25, 23);
-      this.doc.rect(this.margin.left, this.currentY, 35, 15);
+      this.doc.rect(this.margin.left, this.currentY, 35, 12);
       this.doc.setTextColor(255, 255, 255);
       this.doc.setFontSize(10);
       this.doc.setFont('helvetica', 'bold');
-      this.doc.text('LOGO', this.margin.left + 17.5, this.currentY + 9, { align: 'center' });
+      this.doc.text('LOGO', this.margin.left + 17.5, this.currentY + 7.5, { align: 'center' });
     }
     
     // Período e data no lado direito
@@ -93,7 +93,7 @@ export class PDFTemplateGenerator {
     const now = new Date();
     this.doc.text(formatDateBR(now), this.pageWidth - this.margin.right, this.currentY + 8, { align: 'right' });
     
-    this.currentY += 25; // Ajustado para acomodar logo maior
+    this.currentY += 20; // Ajustado para acomodar logo com tamanho controlado
     
     // Título principal centralizado
     this.doc.setTextColor(28, 25, 23); // report-dark-blue
@@ -197,7 +197,7 @@ export class PDFTemplateGenerator {
       this.doc.setTextColor(metric.badgeColor[0], metric.badgeColor[1], metric.badgeColor[2]);
       this.doc.setFontSize(5); // Reduzido de 6 para 5
       this.doc.setFont('helvetica', 'bold');
-      this.doc.text(metric.badge, badgeX + badgeWidth/2, badgeY + 3.5, { align: 'center' });
+      this.doc.text(metric.badge, badgeX + badgeWidth/2, badgeY + badgeHeight/2 + 1, { align: 'center' });
       
       // Valor principal centralizado
       this.doc.setTextColor(17, 24, 39); // foreground
@@ -266,7 +266,7 @@ export class PDFTemplateGenerator {
       tableWidth * 0.16  // Eficiência - 16%
     ];
     const rowHeight = 8;
-    const headerHeight = 12;
+    const headerHeight = 16;
     
     // Cabeçalho da tabela com estilo do HTML e texto quebrado
     const headers = [
@@ -284,7 +284,7 @@ export class PDFTemplateGenerator {
     
     // Linha inferior do cabeçalho (mais escura)
     this.doc.setFillColor(28, 25, 23); // report-dark-blue
-    this.doc.rect(this.margin.left, this.currentY + headerHeight - 2, tableWidth, 2, 'F');
+    this.doc.rect(this.margin.left, this.currentY + headerHeight - 1, tableWidth, 1, 'F');
     
     // Texto do cabeçalho com quebra de linha
     this.doc.setTextColor(28, 25, 23); // report-dark-blue
