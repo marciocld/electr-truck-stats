@@ -151,7 +151,7 @@ export const ReportGenerator = () => {
     setShowPreview(true);
   };
 
-  // Função para gerar PDF usando o serviço personalizado
+  // Função para gerar PDF usando o serviço personalizado (HTML para imagem)
   const handleGeneratePDF = async (options?: PDFOptions) => {
     if (!templateRef.current) {
       console.error('Template ref não encontrado');
@@ -185,17 +185,55 @@ export const ReportGenerator = () => {
     }
   };
 
+  // Função para gerar PDF usando template nativo (sem imagens)
+  const handleGeneratePDFTemplate = async (options?: PDFOptions) => {
+    try {
+      setIsGeneratingPDF(true);
+      
+      const pdfOptions: PDFOptions = {
+        filename: `relatorio-consumo-template-${startDate}-${endDate}.pdf`,
+        orientation: 'portrait',
+        format: 'a4',
+        ...options
+      };
+
+      // Preparar dados para o template
+      const templateData: ReportData = {
+        period: `${formatDateBR(createBrazilianDate(startDate))} - ${formatDateBR(createBrazilianDate(endDate))}`,
+        summary: reportData.summary,
+        detailedData: reportData.detailedData
+      };
+
+      // Usar template nativo para gerar PDF
+      await pdfService.generatePDFFromTemplate(templateData, pdfOptions);
+    } catch (error) {
+      console.error('Erro ao gerar PDF com template:', error);
+      alert('Erro ao gerar PDF com template. Tente novamente.');
+    } finally {
+      setIsGeneratingPDF(false);
+    }
+  };
+
   if (showPreview) {
     return (
       <div className="space-y-6">
-        <div className="flex justify-end items-center print:hidden">
+        <div className="flex justify-end items-center gap-3 print:hidden">
           <Button 
             onClick={() => handleGeneratePDF()}
             disabled={isGeneratingPDF}
+            variant="outline"
             className="flex items-center gap-2"
           >
             <Download className="h-4 w-4" />
-            {isGeneratingPDF ? 'Gerando PDF...' : 'Gerar PDF'}
+            {isGeneratingPDF ? 'Gerando...' : 'PDF com Imagem'}
+          </Button>
+          <Button 
+            onClick={() => handleGeneratePDFTemplate()}
+            disabled={isGeneratingPDF}
+            className="flex items-center gap-2"
+          >
+            <FileText className="h-4 w-4" />
+            {isGeneratingPDF ? 'Gerando...' : 'PDF Template Nativo'}
           </Button>
         </div>
 

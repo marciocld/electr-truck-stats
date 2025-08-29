@@ -387,7 +387,7 @@ export class HTMLToPDFConverter {
     }
     
     // Configurar ícones
-    const icons = card.querySelectorAll('.template-metric-icon, .template-badge-icon');
+     const icons = card.querySelectorAll('.template-metric-icon, .template-badge-icon');
     icons.forEach((icon) => {
       if (icon instanceof HTMLElement) {
         icon.style.cssText = `
@@ -426,6 +426,7 @@ export class HTMLToPDFConverter {
         position: relative !important;
       `;
     }
+
     
     // Preservar cabeçalho da tabela
     const tableHeaders = clonedPage.querySelectorAll('.template-table th');
@@ -488,7 +489,6 @@ export class HTMLToPDFConverter {
           position: relative !important;
         `;
         
-        // Aplicar cores específicas baseadas na posição
         if (cellIndex === 0) {
           td.style.color = '#111827 !important';
           td.style.fontWeight = '600 !important';

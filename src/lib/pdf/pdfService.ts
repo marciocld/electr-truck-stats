@@ -6,6 +6,7 @@ import { addSummarySection } from './summary-renderer';
 import { addDetailedDataTable } from './table-renderer';
 import { addFooter } from './footer-renderer';
 import { HTMLToPDFConverter } from './html-to-pdf';
+import { PDFTemplateGenerator } from './pdf-template';
 
 // Re-exportar tipos para manter compatibilidade
 export type { PDFOptions, ReportData, PDFContext } from './types';
@@ -14,6 +15,7 @@ export type { PDFOptions, ReportData, PDFContext } from './types';
 export class PDFService {
   private context: PDFContext;
   private htmlConverter: HTMLToPDFConverter;
+  private templateGenerator: PDFTemplateGenerator;
 
   constructor(options: PDFOptions = {}) {
     const defaultOptions: PDFOptions = {
@@ -43,6 +45,7 @@ export class PDFService {
     };
 
     this.htmlConverter = new HTMLToPDFConverter(defaultOptions);
+    this.templateGenerator = new PDFTemplateGenerator(defaultOptions);
   }
 
   // Método principal para gerar PDF
@@ -85,6 +88,26 @@ export class PDFService {
   // Método alternativo para converter HTML para PDF
   public async generatePDFFromHTML(element: HTMLElement, options: PDFOptions = {}): Promise<void> {
     return await this.htmlConverter.generatePDFFromHTML(element, options);
+  }
+
+  // Método para gerar PDF usando template nativo (sem imagens)
+  public async generatePDFFromTemplate(data: ReportData, options?: PDFOptions): Promise<void> {
+    try {
+      // Criar nova instância do gerador de template com opções atualizadas
+      const mergedOptions = { ...this.context.options, ...options };
+      const templateGen = new PDFTemplateGenerator(mergedOptions);
+      
+      // Gerar PDF usando template nativo
+      await templateGen.generatePDF(data);
+      
+      // Salvar PDF
+      templateGen.save(mergedOptions.filename);
+      
+      console.log('PDF gerado com sucesso usando template nativo!');
+    } catch (error) {
+      console.error('Erro ao gerar PDF com template nativo:', error);
+      throw error;
+    }
   }
 
 

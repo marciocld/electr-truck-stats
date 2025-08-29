@@ -1,4 +1,16 @@
-# Welcome to your Lovable project
+# Sistema de Estatísticas de Frota Elétrica
+
+Sistema web para monitoramento e geração de relatórios de consumo de veículos elétricos.
+
+## Funcionalidades Principais
+
+- 📊 **Dashboard de Monitoramento**: Visualização em tempo real dos dados da frota
+- 📈 **Gráficos de Performance**: Análise de consumo e eficiência
+- 🚛 **Seleção de Dispositivos**: Filtragem por veículos específicos
+- 📄 **Geração de Relatórios PDF**: Dois métodos disponíveis
+  - **PDF com Imagem**: Captura HTML como imagem (método tradicional)
+  - **PDF Template Nativo**: Geração vetorial com elementos nativos do jsPDF (novo)
+- 🔄 **Integração com API**: Dados em tempo real da frota
 
 ## Project info
 
@@ -48,6 +60,47 @@ npm run dev
 - Click on the "Code" button (green button) near the top right.
 - Select the "Codespaces" tab.
 - Click on "New codespace" to launch a new Codespace environment.
+
+## Sistema de Geração de PDF
+
+O projeto oferece duas opções para geração de relatórios em PDF:
+
+### 1. PDF com Imagem (Método Tradicional)
+- Captura o HTML renderizado como imagem
+- Mantém a aparência exata do design web
+- Arquivos maiores devido às imagens
+- Texto não selecionável
+
+### 2. PDF Template Nativo (Novo Método)
+- Usa elementos nativos do jsPDF
+- Arquivos menores e mais eficientes
+- Texto selecionável e vetorial
+- Melhor performance e acessibilidade
+- Layout otimizado para impressão
+
+### Como Usar
+
+1. Acesse o **Gerador de Relatórios**
+2. Configure período e dispositivos
+3. Clique em **"Gerar Preview"**
+4. Escolha entre:
+   - **"PDF com Imagem"**: Método tradicional
+   - **"PDF Template Nativo"**: Novo método recomendado
+
+### Documentação Técnica
+
+- [Guia do Template PDF](./docs/PDF_TEMPLATE_GUIDE.md): Documentação completa
+- [Guia do Serviço PDF](./docs/PDF_SERVICE_GUIDE.md): Documentação do serviço original
+- [Exemplos de Uso](./src/lib/pdf/pdf-template-example.ts): Código de exemplo
+
+## Tecnologias Utilizadas
+
+- **Frontend**: React + TypeScript + Vite
+- **UI**: Tailwind CSS + Shadcn/ui
+- **PDF**: jsPDF + html2canvas
+- **Gráficos**: Recharts
+- **Estado**: React Query
+- **Formatação**: Intl API (padrão brasileiro)
 - Edit files directly within the Codespace and commit and push your changes once you're done.
 
 ## What technologies are used for this project?

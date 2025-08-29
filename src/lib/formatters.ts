@@ -43,6 +43,19 @@ export const formatDistance = (km: number): string => {
 };
 
 /**
+ * Formata distância sem unidade (apenas número)
+ */
+export const formatDistanceValue = (km: number): string => {
+  if (km === 0) return '0';
+  
+  if (km >= 1000) {
+    return formatNumber(km, { maximumFractionDigits: 0 });
+  } else {
+    return formatNumber(km, { maximumFractionDigits: 1 });
+  }
+};
+
+/**
  * Formata consumo em kWh
  */
 export const formatConsumption = (kwh: number): string => {
@@ -62,6 +75,28 @@ export const formatEfficiency = (kwhPerKm: number): string => {
   if (kwhPerKm === 0) return '0,000 kWh/km';
   
   return `${formatNumber(kwhPerKm, { minimumFractionDigits: 3, maximumFractionDigits: 3 })} kWh/km`;
+};
+
+/**
+ * Formata consumo sem unidade (apenas número)
+ */
+export const formatConsumptionValue = (kwh: number): string => {
+  if (kwh === 0) return '0';
+  
+  if (kwh >= 1000) {
+    return formatNumber(kwh, { maximumFractionDigits: 1 });
+  } else {
+    return formatNumber(kwh, { maximumFractionDigits: 2 });
+  }
+};
+
+/**
+ * Formata eficiência sem unidade (apenas número)
+ */
+export const formatEfficiencyValue = (kwhPerKm: number): string => {
+  if (kwhPerKm === 0) return '0,000';
+  
+  return formatNumber(kwhPerKm, { minimumFractionDigits: 3, maximumFractionDigits: 3 });
 };
 
 /**
