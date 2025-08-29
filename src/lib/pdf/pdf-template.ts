@@ -63,26 +63,25 @@ export class PDFTemplateGenerator {
   }
 
   /**
-   * Adiciona cabeçalho do relatório - matchando o design HTML
+   * Adiciona cabeçalho do relatório - com logo da empresa
    */
   private addHeader(period: string): void {
-    // Linha superior colorida (gradient simulado)
-    this.doc.setFillColor(59, 130, 246); // report-blue
-    this.doc.rect(this.margin.left, this.currentY - 5, this.pageWidth - this.margin.left - this.margin.right, 2, 'F');
+    // Header com logo e período em linha (sem barra superior)
+    // Logo da empresa
+    try {
+      // Adicionar logo da empresa (assumindo que está disponível)
+      this.doc.addImage('/src/assets/company-logo.png', 'PNG', this.margin.left, this.currentY, 20, 8);
+    } catch (error) {
+      // Fallback se a imagem não carregar
+      this.doc.setFillColor(28, 25, 23);
+      this.doc.rect(this.margin.left, this.currentY, 20, 8, 'F');
+      this.doc.setTextColor(255, 255, 255);
+      this.doc.setFontSize(8);
+      this.doc.setFont('helvetica', 'bold');
+      this.doc.text('LOGO', this.margin.left + 10, this.currentY + 5, { align: 'center' });
+    }
     
-    this.currentY += 5;
-    
-    // Header com logo e período em linha (como no HTML)
-    // Logo placeholder (retângulo menor e mais discreto)
-    this.doc.setFillColor(28, 25, 23); // Cor mais escura e discreta
-    this.doc.rect(this.margin.left, this.currentY, 20, 8, 'F');
-    
-    this.doc.setTextColor(255, 255, 255);
-    this.doc.setFontSize(8);
-    this.doc.setFont('helvetica', 'bold');
-    this.doc.text('LOGO', this.margin.left + 10, this.currentY + 5, { align: 'center' });
-    
-    // Período e data no lado direito (como no HTML)
+    // Período e data no lado direito
     this.doc.setTextColor(28, 25, 23); // report-dark-blue equivalent
     this.doc.setFontSize(10);
     this.doc.setFont('helvetica', 'bold');
@@ -96,7 +95,7 @@ export class PDFTemplateGenerator {
     
     this.currentY += 20;
     
-    // Título principal centralizado (como no HTML)
+    // Título principal centralizado
     this.doc.setTextColor(28, 25, 23); // report-dark-blue
     this.doc.setFontSize(22);
     this.doc.setFont('helvetica', 'bold');
@@ -104,7 +103,7 @@ export class PDFTemplateGenerator {
     
     this.currentY += 15;
     
-    // Linha divisória centralizada (como no HTML)
+    // Linha divisória centralizada
     const lineWidth = 25;
     const lineX = (this.pageWidth - lineWidth) / 2;
     this.doc.setFillColor(59, 130, 246); // report-blue
@@ -114,14 +113,14 @@ export class PDFTemplateGenerator {
   }
 
   /**
-   * Adiciona seção de resumo executivo - matchando o grid 2x2 do HTML
+   * Adiciona seção de resumo executivo - cards menores e sem border-top
    */
   private addSummarySection(summary: any): void {
-    // Grid 2x2 como no HTML
+    // Grid 2x2 com cards menores
     const cardWidth = (this.pageWidth - this.margin.left - this.margin.right - 15) / 2;
-    const cardHeight = 45;
+    const cardHeight = 35; // Reduzido de 45 para 35
     const cardSpacingX = 15;
-    const cardSpacingY = 15;
+    const cardSpacingY = 12; // Reduzido de 15 para 12
     
     const metrics = [
       {
@@ -129,7 +128,6 @@ export class PDFTemplateGenerator {
         value: formatInteger(summary.totalDistance),
         unit: 'quilômetros percorridos',
         badge: 'KM',
-        iconBg: [59, 130, 246], // electric-blue
         badgeBg: [239, 246, 255], // light blue
         badgeColor: [29, 78, 216] // darker blue
       },
@@ -138,7 +136,6 @@ export class PDFTemplateGenerator {
         value: formatDecimal1(summary.totalConsumption),
         unit: 'quilowatt-hora consumidos',
         badge: 'kWh',
-        iconBg: [34, 197, 94], // electric-green
         badgeBg: [240, 253, 244], // light green
         badgeColor: [22, 163, 74] // darker green
       },
@@ -147,7 +144,6 @@ export class PDFTemplateGenerator {
         value: formatInteger(summary.avgDistance),
         unit: 'quilômetros por dia',
         badge: 'Avg',
-        iconBg: [168, 85, 247], // energy-purple
         badgeBg: [250, 245, 255], // light purple
         badgeColor: [124, 58, 237] // darker purple
       },
@@ -156,7 +152,6 @@ export class PDFTemplateGenerator {
         value: formatDecimal1(summary.avgConsumption),
         unit: 'quilowatt-hora por dia',
         badge: 'Avg',
-        iconBg: [245, 158, 11], // battery-yellow
         badgeBg: [255, 251, 235], // light yellow
         badgeColor: [217, 119, 6] // darker yellow
       }
@@ -172,7 +167,7 @@ export class PDFTemplateGenerator {
       this.doc.setFillColor(240, 240, 240);
       this.doc.roundedRect(x + 1, y + 1, cardWidth, cardHeight, 3, 3, 'F');
       
-      // Fundo principal do card
+      // Fundo principal do card (sem border-top colorido)
       this.doc.setFillColor(255, 255, 255);
       this.doc.roundedRect(x, y, cardWidth, cardHeight, 3, 3, 'F');
       
@@ -181,47 +176,43 @@ export class PDFTemplateGenerator {
       this.doc.setLineWidth(0.3);
       this.doc.roundedRect(x, y, cardWidth, cardHeight, 3, 3, 'S');
       
-      // Linha superior colorida (como no HTML)
-      this.doc.setFillColor(metric.iconBg[0], metric.iconBg[1], metric.iconBg[2]);
-      this.doc.rect(x, y, cardWidth, 2, 'F');
-      
       // Header do card - título e badge
-      const headerY = y + 8;
+      const headerY = y + 6; // Ajustado para card menor
       
       // Título da métrica
       this.doc.setTextColor(107, 114, 128); // muted-foreground
-      this.doc.setFontSize(8);
+      this.doc.setFontSize(7); // Reduzido de 8 para 7
       this.doc.setFont('helvetica', 'bold');
-      this.doc.text(metric.title, x + 6, headerY);
+      this.doc.text(metric.title, x + 5, headerY);
       
       // Badge à direita
-      const badgeWidth = 20;
-      const badgeHeight = 6;
-      const badgeX = x + cardWidth - badgeWidth - 6;
-      const badgeY = headerY - 4;
+      const badgeWidth = 18; // Reduzido de 20 para 18
+      const badgeHeight = 5; // Reduzido de 6 para 5
+      const badgeX = x + cardWidth - badgeWidth - 5;
+      const badgeY = headerY - 3;
       
       this.doc.setFillColor(metric.badgeBg[0], metric.badgeBg[1], metric.badgeBg[2]);
       this.doc.roundedRect(badgeX, badgeY, badgeWidth, badgeHeight, 2, 2, 'F');
       
       this.doc.setTextColor(metric.badgeColor[0], metric.badgeColor[1], metric.badgeColor[2]);
-      this.doc.setFontSize(6);
+      this.doc.setFontSize(5); // Reduzido de 6 para 5
       this.doc.setFont('helvetica', 'bold');
-      this.doc.text(metric.badge, badgeX + badgeWidth/2, badgeY + 4, { align: 'center' });
+      this.doc.text(metric.badge, badgeX + badgeWidth/2, badgeY + 3.5, { align: 'center' });
       
       // Valor principal centralizado
       this.doc.setTextColor(17, 24, 39); // foreground
-      this.doc.setFontSize(24);
+      this.doc.setFontSize(20); // Reduzido de 24 para 20
       this.doc.setFont('helvetica', 'bold');
-      this.doc.text(metric.value, x + cardWidth/2, y + 26, { align: 'center' });
+      this.doc.text(metric.value, x + cardWidth/2, y + 20, { align: 'center' }); // Ajustado para card menor
       
       // Unidade/descrição
       this.doc.setTextColor(107, 114, 128); // muted-foreground
-      this.doc.setFontSize(7);
+      this.doc.setFontSize(6); // Reduzido de 7 para 6
       this.doc.setFont('helvetica', 'normal');
-      this.doc.text(metric.unit, x + cardWidth/2, y + 35, { align: 'center' });
+      this.doc.text(metric.unit, x + cardWidth/2, y + 28, { align: 'center' }); // Ajustado para card menor
     });
     
-    this.currentY += (cardHeight + cardSpacingY) * 2 + 10;
+    this.currentY += (cardHeight + cardSpacingY) * 2 + 8; // Reduzido o espaçamento final
   }
 
   /**
@@ -277,8 +268,15 @@ export class PDFTemplateGenerator {
     const rowHeight = 8;
     const headerHeight = 12;
     
-    // Cabeçalho da tabela com estilo do HTML
-    const headers = ['Data', 'Odômetro (km)', 'Consumo Acumulado (kWh)', 'Distância (km)', 'Consumo (kWh)', 'Eficiência (kWh/km)'];
+    // Cabeçalho da tabela com estilo do HTML e texto quebrado
+    const headers = [
+      { text: 'Data', lines: ['Data'] },
+      { text: 'Odômetro (km)', lines: ['Odômetro', '(km)'] },
+      { text: 'Consumo Acumulado (kWh)', lines: ['Consumo', 'Acumulado', '(kWh)'] },
+      { text: 'Distância (km)', lines: ['Distância', '(km)'] },
+      { text: 'Consumo (kWh)', lines: ['Consumo', '(kWh)'] },
+      { text: 'Eficiência (kWh/km)', lines: ['Eficiência', '(kWh/km)'] }
+    ];
     
     // Fundo do cabeçalho (cinza claro como no HTML)
     this.doc.setFillColor(248, 250, 252); // template-table th background
@@ -288,14 +286,26 @@ export class PDFTemplateGenerator {
     this.doc.setFillColor(28, 25, 23); // report-dark-blue
     this.doc.rect(this.margin.left, this.currentY + headerHeight - 2, tableWidth, 2, 'F');
     
-    // Texto do cabeçalho
+    // Texto do cabeçalho com quebra de linha
     this.doc.setTextColor(28, 25, 23); // report-dark-blue
-    this.doc.setFontSize(8);
+    this.doc.setFontSize(7); // Reduzido para acomodar texto quebrado
     this.doc.setFont('helvetica', 'bold');
     
     let currentX = this.margin.left;
     headers.forEach((header, index) => {
-      this.doc.text(header, currentX + colWidths[index] / 2, this.currentY + 7, { align: 'center' });
+      const centerX = currentX + colWidths[index] / 2;
+      
+      // Calcular posição Y para centralizar o texto verticalmente
+      const lineHeight = 2.5;
+      const totalTextHeight = header.lines.length * lineHeight;
+      const startY = this.currentY + (headerHeight - totalTextHeight) / 2 + lineHeight;
+      
+      // Renderizar cada linha do cabeçalho
+      header.lines.forEach((line, lineIndex) => {
+        const lineY = startY + (lineIndex * lineHeight);
+        this.doc.text(line, centerX, lineY, { align: 'center' });
+      });
+      
       currentX += colWidths[index];
     });
     
