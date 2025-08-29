@@ -67,18 +67,18 @@ export class PDFTemplateGenerator {
    */
   private addHeader(period: string): void {
     // Header com logo e período em linha (sem barra superior)
-    // Logo da empresa
+    // Logo da empresa com dimensões maiores
     try {
-      // Adicionar logo da empresa (assumindo que está disponível)
-      this.doc.addImage('/src/assets/company-logo.png', 'PNG', this.margin.left, this.currentY, 20, 8);
+      // Adicionar logo da empresa com tamanho aumentado
+      this.doc.addImage('/src/assets/company-logo.png', 'PNG', this.margin.left, this.currentY, 35, 15);
     } catch (error) {
       // Fallback se a imagem não carregar
       this.doc.setFillColor(28, 25, 23);
-      this.doc.rect(this.margin.left, this.currentY, 20, 8, 'F');
+      this.doc.rect(this.margin.left, this.currentY, 35, 15);
       this.doc.setTextColor(255, 255, 255);
-      this.doc.setFontSize(8);
+      this.doc.setFontSize(10);
       this.doc.setFont('helvetica', 'bold');
-      this.doc.text('LOGO', this.margin.left + 10, this.currentY + 5, { align: 'center' });
+      this.doc.text('LOGO', this.margin.left + 17.5, this.currentY + 9, { align: 'center' });
     }
     
     // Período e data no lado direito
@@ -93,7 +93,7 @@ export class PDFTemplateGenerator {
     const now = new Date();
     this.doc.text(formatDateBR(now), this.pageWidth - this.margin.right, this.currentY + 8, { align: 'right' });
     
-    this.currentY += 20;
+    this.currentY += 25; // Ajustado para acomodar logo maior
     
     // Título principal centralizado
     this.doc.setTextColor(28, 25, 23); // report-dark-blue
