@@ -39,17 +39,87 @@ export const ReportGenerator = () => {
     autoLoad: false
   });
 
+  // Dados mock para preview rápido
+  const mockData = {
+    data: [
+      {
+        date: '2024-01-01',
+        totalMileage: 1250,
+        totalConsumption: 156.8,
+        dailyMileage: 0,
+        dailyConsumption: 0,
+        consumptionPerKm: 0,
+        machineSerial: 'TRUCK001',
+        status: 'Online' as const
+      },
+      {
+        date: '2024-01-02',
+        totalMileage: 1378,
+        totalConsumption: 172.4,
+        dailyMileage: 128,
+        dailyConsumption: 15.6,
+        consumptionPerKm: 0.122,
+        machineSerial: 'TRUCK001',
+        status: 'Online' as const
+      },
+      {
+        date: '2024-01-03',
+        totalMileage: 1512,
+        totalConsumption: 189.1,
+        dailyMileage: 134,
+        dailyConsumption: 16.7,
+        consumptionPerKm: 0.125,
+        machineSerial: 'TRUCK001',
+        status: 'Online' as const
+      },
+      {
+        date: '2024-01-04',
+        totalMileage: 1634,
+        totalConsumption: 203.8,
+        dailyMileage: 122,
+        dailyConsumption: 14.7,
+        consumptionPerKm: 0.120,
+        machineSerial: 'TRUCK001',
+        status: 'Online' as const
+      },
+      {
+        date: '2024-01-05',
+        totalMileage: 1789,
+        totalConsumption: 222.5,
+        dailyMileage: 155,
+        dailyConsumption: 18.7,
+        consumptionPerKm: 0.121,
+        machineSerial: 'TRUCK001',
+        status: 'Online' as const
+      }
+    ],
+    summary: {
+      totalConsumption: 65.7,
+      totalDistance: 539,
+      avgConsumptionPerKm: 0.122,
+      avgConsumption: 16.4,
+      avgDistance: 134.8,
+      totalRecords: 5,
+      validRecords: 4,
+      invalidRecords: 1
+    }
+  };
+
+  // Usar dados mock se os dados reais não estão disponíveis
+  const currentData = data.length > 0 ? data : mockData.data;
+  const currentSummary = data.length > 0 ? summary : mockData.summary;
+
   // Converter dados para formato do relatório
   const reportData: ReportData = {
     period: `${formatDateBR(startDate)} - ${formatDateBR(endDate)}`,
     summary: {
-      totalConsumption: summary.totalConsumption,
-      totalDistance: summary.totalDistance,
-      avgConsumptionPerKm: summary.avgConsumptionPerKm,
-      avgConsumption: summary.avgConsumption,
-      avgDistance: summary.avgDistance,
+      totalConsumption: currentSummary.totalConsumption,
+      totalDistance: currentSummary.totalDistance,
+      avgConsumptionPerKm: currentSummary.avgConsumptionPerKm,
+      avgConsumption: currentSummary.avgConsumption,
+      avgDistance: currentSummary.avgDistance,
     },
-    detailedData: data.map(d => ({
+    detailedData: currentData.map(d => ({
       date: d.date,
       accumulatedDistance: d.totalMileage,
       accumulatedConsumption: d.totalConsumption,
@@ -57,6 +127,12 @@ export const ReportGenerator = () => {
       consumption: d.dailyConsumption,
       consumptionPerKm: d.consumptionPerKm
     }))
+  };
+
+
+  // Função para carregar dados mock
+  const handleLoadMockData = () => {
+    setShowPreview(true);
   };
 
   // Função para carregar dados com as datas especificadas
@@ -483,6 +559,15 @@ export const ReportGenerator = () => {
                 <FileText className="h-4 w-4 mr-2" />
               )}
               {isLoading ? 'Carregando dados...' : 'Gerar relatório'}
+            </Button>
+            
+            <Button 
+              onClick={handleLoadMockData}
+              variant="outline"
+              className="w-full flex items-center gap-2"
+            >
+              <Zap className="h-4 w-4" />
+              Preview com dados mock
             </Button>
             
             {lastUpdated && (
