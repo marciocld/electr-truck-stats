@@ -42,6 +42,7 @@ import { pdfService, ReportData } from '@/lib/pdf/pdfService';
 // Dados do relatório
 const reportData: ReportData = {
   period: '01/01/2024 - 31/01/2024',
+  devices: ['KT090AE20444', 'KT090AE20561'], // Números de série dos equipamentos
   summary: {
     totalConsumption: 1500.5,
     totalDistance: 12000,

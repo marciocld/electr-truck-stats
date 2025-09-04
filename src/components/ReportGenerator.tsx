@@ -11,6 +11,7 @@ import { useElectricTruckData } from '@/hooks/useElectricTruckData';
 import { useDeviceSelection } from '@/hooks/useDeviceSelection';
 import { DeviceSelector } from '@/components/DeviceSelector';
 import { formatDistance, formatConsumption, formatEfficiency, formatDateBR, formatInteger, formatDecimal1, formatDecimal2, createBrazilianDate } from '@/lib/formatters';
+import { apiService } from '@/lib/apiService';
 import './ReportGenerator.css';
 
 export const ReportGenerator = () => {
@@ -64,6 +65,26 @@ export const ReportGenerator = () => {
       },
       {
         date: '2024-01-03',
+        totalMileage: 1400,
+        totalConsumption: 175.0,
+        dailyMileage: 3, // Será filtrado (≤ 5 km)
+        dailyConsumption: 2.6,
+        consumptionPerKm: 0.867,
+        machineSerial: 'TRUCK001',
+        status: 'Online' as const
+      },
+      {
+        date: '2024-01-04',
+        totalMileage: 1450,
+        totalConsumption: 1200.0,
+        dailyMileage: 50,
+        dailyConsumption: 1025, // Será filtrado (> 1000 kWh)
+        consumptionPerKm: 20.5,
+        machineSerial: 'TRUCK001',
+        status: 'Online' as const
+      },
+      {
+        date: '2024-01-03',
         totalMileage: 1512,
         totalConsumption: 189.1,
         dailyMileage: 134,
@@ -109,17 +130,61 @@ export const ReportGenerator = () => {
   const currentData = data.length > 0 ? data : mockData.data;
   const currentSummary = data.length > 0 ? summary : mockData.summary;
 
+  // Filtrar dados: remover registros com distância ≤ 5 km OU consumo > 1000 kWh (não aparecem na tabela e cards)
+  const filteredData = currentData.filter(item => 
+    item.dailyMileage > 5 && item.dailyConsumption <= 1000
+  );
+  
+  // Recalcular summary com dados filtrados
+  const recalculatedSummary = filteredData.length > 0 ? {
+    totalConsumption: filteredData.reduce((sum, item) => sum + item.dailyConsumption, 0),
+    totalDistance: filteredData.reduce((sum, item) => sum + item.dailyMileage, 0),
+    avgConsumptionPerKm: filteredData.reduce((sum, item) => sum + item.consumptionPerKm, 0) / filteredData.length,
+    avgConsumption: filteredData.reduce((sum, item) => sum + item.dailyConsumption, 0) / filteredData.length,
+    avgDistance: filteredData.reduce((sum, item) => sum + item.dailyMileage, 0) / filteredData.length,
+  } : {
+    totalConsumption: 0,
+    totalDistance: 0,
+    avgConsumptionPerKm: 0,
+    avgConsumption: 0,
+    avgDistance: 0,
+  };
+
   // Converter dados para formato do relatório
+  // Preparar dados por dispositivo
+  const detailedDataByDevice: { [deviceSerial: string]: any[] } = {};
+  
+  // Agrupar dados por dispositivo (apenas dados filtrados)
+  if (filteredData && filteredData.length > 0) {
+    filteredData.forEach(item => {
+      if (!detailedDataByDevice[item.machineSerial]) {
+        detailedDataByDevice[item.machineSerial] = [];
+      }
+      
+      detailedDataByDevice[item.machineSerial].push({
+        date: item.date,
+        deviceSerial: item.machineSerial,
+        accumulatedDistance: item.totalMileage,
+        accumulatedConsumption: item.totalConsumption,
+        distance: item.dailyMileage,
+        consumption: item.dailyConsumption,
+        consumptionPerKm: item.consumptionPerKm
+      });
+    });
+  }
+
   const reportData: ReportData = {
     period: `${formatDateBR(startDate)} - ${formatDateBR(endDate)}`,
+    devices: selectedDevices.map(deviceId => apiService.getSerialNumber(deviceId)),
     summary: {
-      totalConsumption: currentSummary.totalConsumption,
-      totalDistance: currentSummary.totalDistance,
-      avgConsumptionPerKm: currentSummary.avgConsumptionPerKm,
-      avgConsumption: currentSummary.avgConsumption,
-      avgDistance: currentSummary.avgDistance,
+      totalConsumption: recalculatedSummary.totalConsumption,
+      totalDistance: recalculatedSummary.totalDistance,
+      avgConsumptionPerKm: recalculatedSummary.avgConsumptionPerKm,
+      avgConsumption: recalculatedSummary.avgConsumption,
+      avgDistance: recalculatedSummary.avgDistance,
     },
-    detailedData: currentData.map(d => ({
+    detailedDataByDevice: detailedDataByDevice,
+    detailedData: filteredData.map(d => ({
       date: d.date,
       accumulatedDistance: d.totalMileage,
       accumulatedConsumption: d.totalConsumption,
@@ -197,10 +262,11 @@ export const ReportGenerator = () => {
         ...options
       };
 
-      // Preparar dados para o template
       const templateData: ReportData = {
         period: `${formatDateBR(createBrazilianDate(startDate))} - ${formatDateBR(createBrazilianDate(endDate))}`,
+        devices: reportData.devices,
         summary: reportData.summary,
+        detailedDataByDevice: reportData.detailedDataByDevice,
         detailedData: reportData.detailedData
       };
 

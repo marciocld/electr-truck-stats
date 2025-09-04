@@ -15,6 +15,7 @@ export interface PDFOptions {
 
 export interface ReportData {
   period: string;
+  devices: string[]; // Lista de números de série dos dispositivos
   summary: {
     totalConsumption: number;
     totalDistance: number;
@@ -22,8 +23,22 @@ export interface ReportData {
     avgConsumption: number;
     avgDistance: number;
   };
+  // NOVO: Dados detalhados por dispositivo
+  detailedDataByDevice: {
+    [deviceSerial: string]: Array<{
+      date: string;
+      deviceSerial?: string; // Opcional para compatibilidade
+      accumulatedDistance: number;
+      accumulatedConsumption: number;
+      distance: number;
+      consumption: number;
+      consumptionPerKm: number;
+    }>;
+  };
+  // MANTIDO: Dados consolidados (opcional)
   detailedData: Array<{
     date: string;
+    deviceSerial?: string; // Opcional para compatibilidade
     accumulatedDistance: number;
     accumulatedConsumption: number;
     distance: number;

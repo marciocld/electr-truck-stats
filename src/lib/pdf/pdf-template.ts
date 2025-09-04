@@ -45,13 +45,13 @@ export class PDFTemplateGenerator {
   public async generatePDF(data: ReportData): Promise<void> {
     try {
       // Adicionar cabeçalho
-      this.addHeader(data.period);
+      this.addHeader(data.period, data.devices);
       
       // Adicionar resumo executivo
       this.addSummarySection(data.summary);
       
       // Adicionar tabela de dados detalhados
-      this.addDetailedDataTable(data.detailedData);
+      this.addDetailedDataTable(data.detailedData, data.detailedDataByDevice, data.devices);
       
       // Adicionar rodapé
       this.addFooter();
@@ -66,42 +66,51 @@ export class PDFTemplateGenerator {
   /**
    * Adiciona cabeçalho do relatório - com logo da empresa
    */
-  private addHeader(period: string): void {
+  private addHeader(period: string, devices: string[]): void {
     // Logo da empresa com dimensões proporcionais
     try {
-      const img = new Image();
-      img.src = logo;
+      // Dimensões fixas para evitar problemas de carregamento
+      const targetWidth = 88.87; // Largura fixa
+      let targetHeight = 11.96; // Altura fixa
       
-      // Dimensões otimizadas para profissionalismo
-      const targetWidth = 40;
-      let targetHeight = 25;
-      
-      if (img.naturalWidth && img.naturalHeight) {
-        targetHeight = (img.naturalHeight * targetWidth) / img.naturalWidth;
-      }
-      
-      // Logo com fundo cinza sutil (sem borda)
-      this.doc.setFillColor(245, 247, 249); // HSL(216, 27%, 97%) aproximado em RGB
-      this.doc.roundedRect(this.margin.left - 2, this.currentY - 2, targetWidth + 4, targetHeight + 4, 3, 3, 'F');
-      
-      this.doc.addImage(
-        logo,
-        'PNG',
-        this.margin.left,
-        this.currentY,
-        targetWidth,
-        targetHeight,
-        undefined,
-        'NONE'
-      );
+      // Usar dimensões fixas para garantir consistência
+      // Proporção 7.43:1 (88.87mm x 11.96mm) - logo muito larga e baixa
       
       // Informações do relatório à direita com design mais elegante
       const rightX = this.pageWidth - this.margin.right;
-      const infoY = this.currentY + 2;
       
-      // Container para informações do período com destaque cinza (sem borda)
-      this.doc.setFillColor(245, 247, 249); // HSL(216, 27%, 97%) aproximado em RGB
-      this.doc.roundedRect(rightX - 65, infoY - 3, 65, 22, 2, 2, 'F');
+      // Logo posicionada mais próxima do topo
+      const logoY = this.currentY + 5;
+      
+      // Adicionar logo com tratamento de erro mais robusto
+      try {
+        this.doc.addImage(
+          logo,
+          'PNG',
+          this.margin.left,
+          logoY,
+          targetWidth,
+          targetHeight,
+          undefined,
+          'NONE'
+        );
+      } catch (imageError) {
+        console.warn('Erro ao carregar logo, usando fallback:', imageError);
+        // Fallback: retângulo com texto
+        this.doc.setFillColor(45, 45, 45);
+        this.doc.roundedRect(this.margin.left, logoY, targetWidth, targetHeight, 3, 3, 'F');
+        this.doc.setTextColor(255, 255, 255);
+        this.doc.setFontSize(8);
+        this.doc.setFont('helvetica', 'bold');
+        this.doc.text('LOGO', this.margin.left + targetWidth/2, logoY + targetHeight/2 + 2, { align: 'center' });
+      }
+      
+      // Posicionar informações do período centralizadas verticalmente com a logo
+      const logoCenterY = logoY + targetHeight / 2;
+      const infoContainerHeight = 22;
+      const infoY = logoCenterY - infoContainerHeight / 2 + 6; // Desceu 6 pontos
+      
+
       
       // Texto "PERÍODO" em cinza pequeno
       this.doc.setTextColor(120, 120, 120);
@@ -135,33 +144,35 @@ export class PDFTemplateGenerator {
       this.currentY += 25;
     }
     
-    this.currentY += 25;
+    this.currentY += 4;
+    
+    // Linha divisória sutil logo após a logo
+    this.doc.setDrawColor(230, 230, 230);
+    this.doc.setLineWidth(0.5);
+    this.doc.line(this.margin.left, this.currentY, this.pageWidth - this.margin.right, this.currentY);
+    
+    this.currentY += 12;
     
     // Título principal mais elegante
     this.doc.setTextColor(30, 30, 30);
-    this.doc.setFontSize(26);
+    this.doc.setFontSize(18);
     this.doc.setFont('helvetica', 'bold');
-    this.doc.text('Relatório de Consumo Energético', this.margin.left, this.currentY);
+    this.doc.text('Relatório de consumo SYZ319BEV', this.margin.left, this.currentY);
     
-    // Subtítulo descritivo
-    this.currentY += 10;
+    // Informação dos dispositivos
+    this.currentY += 8;
     this.doc.setTextColor(100, 100, 100);
-    this.doc.setFontSize(11);
+    this.doc.setFontSize(10);
     this.doc.setFont('helvetica', 'normal');
-    this.doc.text('Análise detalhada do desempenho e eficiência da frota elétrica', this.margin.left, this.currentY);
     
-    // Linha divisória mais elegante com gradiente visual
-    this.currentY += 12;
-    this.doc.setDrawColor(200, 200, 200);
-    this.doc.setLineWidth(1.5);
-    this.doc.line(this.margin.left, this.currentY, this.pageWidth - this.margin.right, this.currentY);
+    if (devices && devices.length > 0) {
+      const deviceText = devices.length === 1 
+        ? `Equipamento: ${devices[0]}`
+        : `Equipamentos: ${devices.join(', ')}`;
+      this.doc.text(deviceText, this.margin.left, this.currentY);
+    }
     
-    // Linha mais fina abaixo
-    this.doc.setDrawColor(230, 230, 230);
-    this.doc.setLineWidth(0.5);
-    this.doc.line(this.margin.left, this.currentY + 2, this.pageWidth - this.margin.right, this.currentY + 2);
-    
-    this.currentY += 18;
+    this.currentY += 20;
   }
 
   /**
@@ -272,7 +283,7 @@ export class PDFTemplateGenerator {
   /**
    * Adiciona tabela de dados detalhados - com estilo do HTML
    */
-  private addDetailedDataTable(detailedData: any[]): void {
+  private addDetailedDataTable(detailedData: any[], detailedDataByDevice?: { [deviceSerial: string]: any[] }, devices?: string[]): void {
     // Nova página para dados detalhados
     this.doc.addPage();
     this.currentY = this.margin.top;
@@ -310,8 +321,19 @@ export class PDFTemplateGenerator {
     this.doc.setLineWidth(0.3);
     this.doc.roundedRect(this.margin.left, tableStartY, tableWidth, 10, 2, 2, 'S');
     
+    // Se temos devices, sempre mostrar coluna de dispositivo
+    const hasDeviceData = devices && devices.length > 0;
+    
     // Configurações da tabela (larguras proporcionais como no HTML)
-    const colWidths = [
+    const colWidths = hasDeviceData ? [
+      tableWidth * 0.22, // Dispositivo - 22% (primeira coluna)
+      tableWidth * 0.13, // Data - 13% (igual)
+      tableWidth * 0.13, // Odômetro - 13% (igual)
+      tableWidth * 0.13, // Consumo Acum - 13% (igual)
+      tableWidth * 0.13, // Distância - 13% (igual)
+      tableWidth * 0.13, // Consumo - 13% (igual)
+      tableWidth * 0.13  // Eficiência - 13% (igual)
+    ] : [
       tableWidth * 0.16, // Data - 16%
       tableWidth * 0.18, // Odômetro - 18%
       tableWidth * 0.18, // Consumo Acum - 18%
@@ -323,7 +345,15 @@ export class PDFTemplateGenerator {
     const headerHeight = 16;
     
     // Cabeçalho da tabela com estilo do HTML e texto quebrado
-    const headers = [
+    const headers = hasDeviceData ? [
+      { text: 'Equipamento', lines: ['Equipamento'] },
+      { text: 'Data', lines: ['Data'] },
+      { text: 'Odômetro (km)', lines: ['Odômetro', '(km)'] },
+      { text: 'Consumo Acumulado (kWh)', lines: ['Consumo', 'Acumulado', '(kWh)'] },
+      { text: 'Distância (km)', lines: ['Distância', '(km)'] },
+      { text: 'Consumo (kWh)', lines: ['Consumo', '(kWh)'] },
+      { text: 'Eficiência (kWh/km)', lines: ['Eficiência', '(kWh/km)'] }
+    ] : [
       { text: 'Data', lines: ['Data'] },
       { text: 'Odômetro (km)', lines: ['Odômetro', '(km)'] },
       { text: 'Consumo Acumulado (kWh)', lines: ['Consumo', 'Acumulado', '(kWh)'] },
@@ -380,17 +410,33 @@ export class PDFTemplateGenerator {
       }
       
       // Dados da linha com formatação como no HTML
-      const rowData = [
-        formatDateBR(new Date(row.date)),
+      const rowData = hasDeviceData ? [
+        row.deviceSerial || (devices && devices.length > 0 ? devices[0] : 'N/A'), // Dispositivo (primeira coluna)
+        formatDateBR(row.date),
         formatInteger(row.accumulatedDistance),
         formatDecimal1(row.accumulatedConsumption),
         formatInteger(row.distance),
         formatDecimal1(row.consumption),
-        formatEfficiency(row.consumptionPerKm).replace(' kWh/km', '') // remover unidade
+        formatDecimal2(row.consumptionPerKm) // Eficiência com 2 casas decimais
+      ] : [
+        formatDateBR(row.date),
+        formatInteger(row.accumulatedDistance),
+        formatDecimal1(row.accumulatedConsumption),
+        formatInteger(row.distance),
+        formatDecimal1(row.consumption),
+        formatDecimal2(row.consumptionPerKm) // Eficiência com 2 casas decimais
       ];
       
       // Cores diferentes para cada tipo de dado (como no HTML)
-      const textColors = [
+      const textColors = hasDeviceData ? [
+        [59, 130, 246], // Dispositivo - azul (primeira coluna)
+        [17, 24, 39], // Data - escuro
+        [107, 114, 128], // Odômetro - cinza
+        [107, 114, 128], // Consumo Acum - cinza  
+        [17, 24, 39], // Distância - escuro
+        [17, 24, 39], // Consumo - escuro
+        [17, 24, 39]  // Eficiência - escuro
+      ] : [
         [17, 24, 39], // Data - escuro
         [107, 114, 128], // Odômetro - cinza
         [107, 114, 128], // Consumo Acum - cinza  
@@ -399,7 +445,7 @@ export class PDFTemplateGenerator {
         [17, 24, 39]  // Eficiência - escuro
       ];
       
-      const fontWeights = ['bold', 'normal', 'normal', 'bold', 'bold', 'bold'];
+      const fontWeights = hasDeviceData ? ['bold', 'bold', 'normal', 'normal', 'bold', 'bold', 'bold'] : ['bold', 'normal', 'normal', 'bold', 'bold', 'bold'];
       
       currentX = this.margin.left;
       rowData.forEach((data, colIndex) => {

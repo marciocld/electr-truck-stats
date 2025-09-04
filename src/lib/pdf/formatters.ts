@@ -4,6 +4,13 @@
  * @returns Data formatada no padrão brasileiro
  */
 export function formatDateBR(dateString: string): string {
+  // Se é string no formato YYYY-MM-DD, criar data brasileira evitando timezone
+  if (dateString.match(/^\d{4}-\d{2}-\d{2}$/)) {
+    const [year, month, day] = dateString.split('-');
+    const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+    return date.toLocaleDateString('pt-BR');
+  }
+  // Se é string em outro formato, usar new Date
   const date = new Date(dateString);
   return date.toLocaleDateString('pt-BR');
 }

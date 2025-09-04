@@ -11,93 +11,74 @@ import { ReportData, PDFOptions } from './types';
  */
 const exampleReportData: ReportData = {
   period: '01/01/2024 - 31/01/2024',
+  devices: ['KT090AE20444', 'KT090AE20561', 'LFXAH97W8R3012999'],
   summary: {
-    totalConsumption: 1567.8,
-    totalDistance: 12450,
-    avgConsumptionPerKm: 0.126,
-    avgConsumption: 52.3,
-    avgDistance: 415
+    totalConsumption: 156.8,
+    totalDistance: 1250,
+    avgConsumptionPerKm: 0.125,
+    avgConsumption: 15.7,
+    avgDistance: 125
+  },
+  detailedDataByDevice: {
+    'KT090AE20444': [
+      {
+        date: '2024-01-01',
+        deviceSerial: 'KT090AE20444',
+        accumulatedDistance: 1250,
+        accumulatedConsumption: 156.8,
+        distance: 0,
+        consumption: 0,
+        consumptionPerKm: 0
+      },
+      {
+        date: '2024-01-02',
+        deviceSerial: 'KT090AE20444',
+        accumulatedDistance: 1378,
+        accumulatedConsumption: 172.4,
+        distance: 128,
+        consumption: 15.6,
+        consumptionPerKm: 0.122
+      }
+    ],
+    'KT090AE20561': [
+      {
+        date: '2024-01-01',
+        deviceSerial: 'KT090AE20561',
+        accumulatedDistance: 890,
+        accumulatedConsumption: 112.3,
+        distance: 0,
+        consumption: 0,
+        consumptionPerKm: 0
+      },
+      {
+        date: '2024-01-02',
+        deviceSerial: 'KT090AE20561',
+        accumulatedDistance: 1023,
+        accumulatedConsumption: 128.7,
+        distance: 133,
+        consumption: 16.4,
+        consumptionPerKm: 0.123
+      }
+    ]
   },
   detailedData: [
     {
       date: '2024-01-01',
-      accumulatedDistance: 415,
-      accumulatedConsumption: 52.3,
-      distance: 415,
-      consumption: 52.3,
-      consumptionPerKm: 0.126
+      deviceSerial: 'KT090AE20444',
+      accumulatedDistance: 2140,
+      accumulatedConsumption: 269.1,
+      distance: 0,
+      consumption: 0,
+      consumptionPerKm: 0
     },
     {
       date: '2024-01-02',
-      accumulatedDistance: 830,
-      accumulatedConsumption: 104.6,
-      distance: 415,
-      consumption: 52.3,
-      consumptionPerKm: 0.126
-    },
-    {
-      date: '2024-01-03',
-      accumulatedDistance: 1245,
-      accumulatedConsumption: 156.9,
-      distance: 415,
-      consumption: 52.3,
-      consumptionPerKm: 0.126
-    },
-    {
-      date: '2024-01-04',
-      accumulatedDistance: 1660,
-      accumulatedConsumption: 209.2,
-      distance: 415,
-      consumption: 52.3,
-      consumptionPerKm: 0.126
-    },
-    {
-      date: '2024-01-05',
-      accumulatedDistance: 2075,
-      accumulatedConsumption: 261.5,
-      distance: 415,
-      consumption: 52.3,
-      consumptionPerKm: 0.126
-    },
-    {
-      date: '2024-01-06',
-      accumulatedDistance: 2490,
-      accumulatedConsumption: 313.8,
-      distance: 415,
-      consumption: 52.3,
-      consumptionPerKm: 0.126
-    },
-    {
-      date: '2024-01-07',
-      accumulatedDistance: 2905,
-      accumulatedConsumption: 366.1,
-      distance: 415,
-      consumption: 52.3,
-      consumptionPerKm: 0.126
-    },
-    {
-      date: '2024-01-08',
-      accumulatedDistance: 3320,
-      accumulatedConsumption: 418.4,
-      distance: 415,
-      consumption: 52.3,
-      consumptionPerKm: 0.126
-    },
-    {
-      date: '2024-01-09',
-      accumulatedDistance: 3735,
-      accumulatedConsumption: 470.7,
-      distance: 415,
-      consumption: 52.3,
-      consumptionPerKm: 0.126
-    },
-    {
-      date: '2024-01-10',
-      accumulatedDistance: 4150,
-      accumulatedConsumption: 523.0,
-      distance: 415,
-      consumption: 52.3,
-      consumptionPerKm: 0.126
+      deviceSerial: 'KT090AE20444',
+      accumulatedDistance: 2401,
+      accumulatedConsumption: 301.1,
+      distance: 261,
+      consumption: 32.0,
+      consumptionPerKm: 0.123
     }
   ]
 };
@@ -192,12 +173,17 @@ export async function generateLargePDF(): Promise<void> {
 
   const largeReportData: ReportData = {
     period: '01/01/2024 - 10/04/2024',
+    devices: ['KT090AE20444', 'KT090AE20561', 'LFXAH97W8R3012999'],
     summary: {
       totalConsumption: 5230,
       totalDistance: 41500,
       avgConsumptionPerKm: 0.126,
       avgConsumption: 52.3,
       avgDistance: 415
+    },
+    detailedDataByDevice: {
+      'KT090AE20444': largeDetailedData.slice(0, 50),
+      'KT090AE20561': largeDetailedData.slice(50, 100)
     },
     detailedData: largeDetailedData
   };
